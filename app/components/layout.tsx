@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import gsap from "gsap";
+import { Menu, X } from "lucide-react";
 import {
   LayoutGrid, ToggleLeft, Table2, BarChart3, Type, Palette,
   Layers, PanelRight, Search, Upload, Bell, CheckSquare,
@@ -139,49 +142,120 @@ const navSections = [
   },
 ];
 
+/* ── Nav content (shared between sidebar and mobile drawer) ── */
+function NavContent({ pathname, onLinkClick }: { pathname: string; onLinkClick?: () => void }) {
+  return (
+    <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto">
+      {navSections.map((section) => (
+        <div key={section.title}>
+          <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
+            {section.title}
+          </p>
+          <ul className="space-y-0.5">
+            {section.items.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={onLinkClick}
+                  className={cn(
+                    "flex items-center gap-2 rounded px-3 py-1.5 text-xs transition-colors",
+                    pathname === item.href
+                      ? "bg-brand-l2 text-signature font-medium"
+                      : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  );
+}
+
 export default function ComponentsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!drawerRef.current || !backdropRef.current) return;
+    if (open) {
+      gsap.fromTo(drawerRef.current, { x: "-100%" }, { x: "0%", duration: 0.25, ease: "power2.out" });
+      gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, onStart: () => { if (backdropRef.current) backdropRef.current.style.pointerEvents = "auto"; } });
+    } else {
+      gsap.to(drawerRef.current, { x: "-100%", duration: 0.2, ease: "power2.in" });
+      gsap.to(backdropRef.current, { opacity: 0, duration: 0.15, onComplete: () => { if (backdropRef.current) backdropRef.current.style.pointerEvents = "none"; } });
+    }
+  }, [open]);
+
+  // Close drawer on route change
+  useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-surface-base">
-      {/* Sidebar */}
-      <aside className="flex h-full w-56 shrink-0 flex-col border-r border-border-default bg-surface-raised overflow-y-auto">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-surface-base">
+
+      {/* ── Desktop sidebar ─────────────────────── */}
+      <aside className="hidden md:flex h-full w-56 shrink-0 flex-col border-r border-border-default bg-surface-raised overflow-y-auto">
         <div className="flex h-14 items-center px-4 border-b border-border-default shrink-0">
           <Link href="/" className="type-heading text-signature hover:opacity-80 transition-opacity">
             Portal WX
           </Link>
         </div>
-        <nav className="flex-1 px-2 py-3 space-y-4">
-          {navSections.map((section) => (
-            <div key={section.title}>
-              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
-                {section.title}
-              </p>
-              <ul className="space-y-0.5">
-                {section.items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-2 rounded px-3 py-1.5 text-xs transition-colors",
-                        pathname === item.href
-                          ? "bg-brand-l2 text-signature font-medium"
-                          : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
-                      )}
-                    >
-                      {item.icon}
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
+        <NavContent pathname={pathname} />
       </aside>
 
-      {/* Content */}
-      <main className="flex-1 overflow-y-auto px-8 py-8">
+      {/* ── Mobile top bar ───────────────────────── */}
+      <header className="flex md:hidden h-14 shrink-0 items-center justify-between px-4 bg-surface-raised border-b border-border-default">
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open navigation"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-ink-secondary hover:bg-surface-subtle transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+        <Link href="/" className="text-[15px] font-semibold text-signature">
+          Portal WX DS
+        </Link>
+        <div className="w-9" />
+      </header>
+
+      {/* ── Mobile backdrop ──────────────────────── */}
+      <div
+        ref={backdropRef}
+        onClick={() => setOpen(false)}
+        className="fixed inset-0 z-40 bg-black/40 md:hidden"
+        style={{ opacity: 0, pointerEvents: "none" }}
+        aria-hidden="true"
+      />
+
+      {/* ── Mobile nav drawer ────────────────────── */}
+      <div
+        ref={drawerRef}
+        className="fixed top-0 left-0 h-full w-[280px] z-50 flex flex-col bg-surface-raised border-r border-border-default md:hidden"
+        style={{ transform: "translateX(-100%)" }}
+      >
+        <div className="flex h-14 shrink-0 items-center justify-between px-4 border-b border-border-default">
+          <Link href="/" className="type-heading text-signature">
+            Portal WX DS
+          </Link>
+          <button
+            onClick={() => setOpen(false)}
+            aria-label="Close navigation"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-muted hover:bg-surface-subtle transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        <NavContent pathname={pathname} onLinkClick={() => setOpen(false)} />
+      </div>
+
+      {/* ── Content ──────────────────────────────── */}
+      <main className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-8">
         <div className="mx-auto max-w-[1000px]">{children}</div>
       </main>
     </div>
