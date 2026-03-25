@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 // Size: lg = 48px (primary/secondary/danger), md = 36px (tertiary/icon/link)
 
 export type ButtonVariant = "primary" | "secondary" | "tertiary" | "danger" | "link" | "icon";
-export type ButtonSize = "lg" | "md";
+export type ButtonSize = "lg" | "md" | "sm";
 export type ButtonSurface = "light" | "dark";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -37,12 +37,14 @@ const defaultSize: Record<ButtonVariant, Record<ButtonSurface, ButtonSize>> = {
 const sizeClasses: Record<ButtonSize, string> = {
   lg: "h-12 px-6 gap-1.5",
   md: "h-9 px-3 gap-1.5",
+  sm: "h-7 px-2.5 gap-1 text-xs",
 };
 
 // Square sizing for icon-only button
 const iconSquareClasses: Record<ButtonSize, string> = {
   lg: "h-12 w-12 min-w-12",
   md: "h-9 w-[42px] min-w-[42px]",
+  sm: "h-7 w-7 min-w-7",
 };
 
 // Variant × surface → state classes
