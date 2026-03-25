@@ -1,26 +1,410 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
+@import "mapbox-gl/dist/mapbox-gl.css";
 
+/* ─────────────────────────────────────────────
+   Storybook base tokens  (source of truth)
+   Source: monorepo-3c645f.gitlab.io/storybook-static
+           ?path=/docs/foundation-design-tokens--docs
+───────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Font */
+  --font-family: "Lexend";
+
+  /* ── Color / Primary scale (Portal WX / Sharry — blue/indigo brand)
+     Mapping: 300=signature, 400=D1 (active), 500=D2 (hover),
+              200=L1 (accent bg), 100=L2 (background tint)         */
+  --color-primary-500: #4D6EC7;
+  --color-primary-400: #3F5BA7;
+  --color-primary-300: #6382D5;
+  --color-primary-200: #B8C2DE;
+  --color-primary-100: #F5F6FA;
+
+  /* ── Color / Gray scale */
+  --color-gray-100: #f5f6fa;
+  --color-gray-200: #ebedf3;
+  --color-gray-300: #a3acc2;
+  --color-gray-400: #616c84;
+  --color-gray-500: #373f51;
+  --color-gray-600: #2f3541;
+  --color-gray-700: #232834;
+  --color-gray-800: #1b2232;
+
+  /* ── Color / Semantic */
+  --color-success-200: #28af61;
+  --color-success-100: #cbead8;
+  --color-danger-300:  #bc4646;
+  --color-danger-200:  #eb5757;
+  --color-danger-100:  #ed6454;
+  --color-warning:     #f2cd4a;
+  --color-heavy:       #f2994a;
+  --color-info:        #2d9cdb;
+  --color-white:       #ffffff;
+  --color-black:       #000000;
+  --color-text:        #373f51;
+
+  /* ── Color / Categorical (charts, tags, series 0–10) */
+  --color-0:  #e50e59;
+  --color-1:  #6bcca5;
+  --color-2:  #ff9494;
+  --color-3:  #c1aef8;
+  --color-4:  #fbbf24;
+  --color-5:  #93c5fd;
+  --color-6:  #9edcc5;
+  --color-7:  #ffc4cd;
+  --color-8:  #d8cbff;
+  --color-9:  #ffe5be;
+  --color-10: #c2daf7;
+
+  /* ── Shadows */
+  --box-shadow-primary:    0 2px 4px #1b22320d;
+  --box-shadow-secondary:  0 2px 12px #1b223217;
+  --box-shadow-tertiary:   0 3px 9px #1b22320a;
+  --box-shadow-quaternary: 0px 4px 8px #1b22320a;
+  --box-shadow-quinary:    0 2px 12px 0 #1b223217;
+
+  /* ── Border radius */
+  --border-radius-4:     4px;
+  --border-radius-6:     6px;
+  --border-radius-8:     8px;
+  --border-radius-12:    12px;
+  --border-radius-24:    24px;
+  --border-radius-round: 50%;
+
+  /* ── Transitions */
+  --transition-primary:       0.15s;
+  --transition-secondary:     0.25s;
+  --transition-animate-slow:  0.75s;
+  --transition-animate:       3s;
+
+  /* ── Z-index */
+  --z-index-top-above:     1030;
+  --z-index-top:           1020;
+  --z-index-top-below:     1010;
+  --z-index-content-above: 2;
+  --z-index-content:       1;
+  --z-index-zero:          0;
+  --z-index-content-below: -1;
 }
 
+/* ─────────────────────────────────────────────
+   Light mode semantic tokens  (default)
+   Brand: Signature #6382D5 blue/indigo — Portal WX / Sharry
+───────────────────────────────────────────── */
+:root {
+  /* Brand scale (Sharry / Portal WX theme)
+     SIGNATURE     = #6382D5  primary brand color
+     D2            = #4D6EC7  hover state
+     D1            = #3F5BA7  active / strong emphasis
+     L1            = #B8C2DE  subtle accent background
+     L2            = #F5F6FA  lightest background tint      */
+  --color-signature: #6382D5;
+  --color-d2:        #4D6EC7;
+  --color-d1:        #3F5BA7;
+  --color-l1:        #B8C2DE;
+  --color-l2:        #F5F6FA;
+
+  /* Surfaces — mapped from Storybook gray scale */
+  --surface-base:    var(--color-gray-100);   /* #f5f6fa */
+  --surface-raised:  var(--color-white);      /* #ffffff */
+  --surface-overlay: var(--color-white);      /* #ffffff */
+  --surface-subtle:  var(--color-gray-200);   /* #ebedf3 */
+
+  /* Text — mapped from Storybook gray scale */
+  --ink-primary:   var(--color-gray-500);   /* #373f51 */
+  --ink-secondary: var(--color-gray-400);   /* #616c84 */
+  --ink-muted:     var(--color-gray-300);   /* #a3acc2 */
+  --ink-inverse:   var(--color-white);
+
+  /* Status — mapped from Storybook semantic colors */
+  --status-success:    var(--color-success-200); /* #28af61 */
+  --status-success-bg: var(--color-success-100); /* #cbead8 */
+  --status-warning:    var(--color-warning);     /* #f2cd4a */
+  --status-warning-bg: #fef9e0;
+  --status-error:      var(--color-danger-200);  /* #eb5757 */
+  --status-error-bg:   #fef0f0;
+  --status-info:       var(--color-info);        /* #2d9cdb */
+  --status-info-bg:    #e0f3fc;
+
+  /* Border — mapped from Storybook gray scale */
+  --border-default: var(--color-gray-200);  /* #ebedf3 */
+  --border-strong:  var(--color-gray-300);  /* #a3acc2 */
+  --border-subtle:  var(--color-gray-100);  /* #f5f6fa */
+
+  /* Focus ring */
+  --ring-focus: var(--color-d1);  /* #3F5BA7 */
+
+  /* Radius — mapped from Storybook border-radius tokens */
+  --radius-card:  var(--border-radius-12);  /* 12px */
+  --radius-input: var(--border-radius-8);   /* 8px  */
+  --radius-pill:  var(--border-radius-round); /* 50% */
+
+  /* Shadow — mapped from Storybook box-shadow tokens */
+  --shadow-card:    var(--box-shadow-primary);   /* 0 2px 4px  */
+  --shadow-raised:  var(--box-shadow-secondary); /* 0 2px 12px */
+  --shadow-overlay: var(--box-shadow-quaternary);/* 0 4px 8px  */
+
+  /* Spacing rhythm */
+  --space-section: 2rem;
+  --space-panel:   1.5rem;
+}
+
+/* ─────────────────────────────────────────────
+   Dark mode semantic tokens
+───────────────────────────────────────────── */
+.dark {
+  /* Brand scale — blue/indigo hue, adjusted for dark readability */
+  --color-signature: #7a96df;
+  --color-d2:        #6382D5;
+  --color-d1:        #4D6EC7;
+  --color-l1:        #1e2848;
+  --color-l2:        #131a34;
+
+  /* Surfaces */
+  --surface-base:    #0f1117;
+  --surface-raised:  #161c2a;
+  --surface-overlay: #1e253a;
+  --surface-subtle:  #1a2135;
+
+  /* Text — inverted gray roles */
+  --ink-primary:   var(--color-gray-200);  /* #ebedf3 */
+  --ink-secondary: var(--color-gray-300);  /* #a3acc2 */
+  --ink-muted:     var(--color-gray-400);  /* #616c84 */
+  --ink-inverse:   var(--color-gray-800);  /* #1b2232 */
+
+  /* Status — same hues, adjusted for dark */
+  --status-success:    #2ed47a;
+  --status-success-bg: #061e14;
+  --status-warning:    #f2cd4a;
+  --status-warning-bg: #1c1206;
+  --status-error:      var(--color-danger-200); /* #eb5757 */
+  --status-error-bg:   #2d1010;
+  --status-info:       var(--color-info);       /* #2d9cdb */
+  --status-info-bg:    #0d1b3e;
+
+  /* Border */
+  --border-default: #252d42;
+  --border-strong:  #323c57;
+  --border-subtle:  #1c2336;
+
+  /* Focus ring */
+  --ring-focus: #7a96df;
+
+  /* Shadow */
+  --shadow-card:    0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+  --shadow-raised:  0 2px 12px rgb(0 0 0 / 0.4);
+  --shadow-overlay: 0 8px 24px 0 rgb(0 0 0 / 0.5);
+}
+
+/* ─────────────────────────────────────────────
+   Tailwind v4 @theme — CSS vars → utility classes
+───────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Font */
+  --font-sans: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+
+  /* ── Brand */
+  --color-signature:  var(--color-signature);
+  --color-brand-d1:   var(--color-d1);
+  --color-brand-d2:   var(--color-d2);
+  --color-brand-l1:   var(--color-l1);
+  --color-brand-l2:   var(--color-l2);
+
+  /* ── Surfaces */
+  --color-surface-base:    var(--surface-base);
+  --color-surface-raised:  var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-subtle:  var(--surface-subtle);
+
+  /* ── Ink */
+  --color-ink-primary:   var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted:     var(--ink-muted);
+  --color-ink-inverse:   var(--ink-inverse);
+
+  /* ── Status */
+  --color-status-success:    var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-warning:    var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-error:      var(--status-error);
+  --color-status-error-bg:   var(--status-error-bg);
+  --color-status-info:       var(--status-info);
+  --color-status-info-bg:    var(--status-info-bg);
+
+  /* ── Border */
+  --color-border-default: var(--border-default);
+  --color-border-strong:  var(--border-strong);
+  --color-border-subtle:  var(--border-subtle);
+
+  /* ── Gray scale (raw Storybook tokens as utilities) */
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+
+  /* ── Categorical colors (charts / series) */
+  --color-chart-0:  var(--color-0);
+  --color-chart-1:  var(--color-1);
+  --color-chart-2:  var(--color-2);
+  --color-chart-3:  var(--color-3);
+  --color-chart-4:  var(--color-4);
+  --color-chart-5:  var(--color-5);
+  --color-chart-6:  var(--color-6);
+  --color-chart-7:  var(--color-7);
+  --color-chart-8:  var(--color-8);
+  --color-chart-9:  var(--color-9);
+  --color-chart-10: var(--color-10);
+
+  /* ── Shadows */
+  --shadow-card:    var(--shadow-card);
+  --shadow-raised:  var(--shadow-raised);
+  --shadow-overlay: var(--shadow-overlay);
+
+  /* ── Z-index */
+  --z-index-top-above:     var(--z-index-top-above);
+  --z-index-top:           var(--z-index-top);
+  --z-index-top-below:     var(--z-index-top-below);
+  --z-index-content-above: var(--z-index-content-above);
+  --z-index-content:       var(--z-index-content);
+  --z-index-zero:          var(--z-index-zero);
+  --z-index-content-below: var(--z-index-content-below);
+
+  /* ── Max width */
+  --width-wide: 1440px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─────────────────────────────────────────────
+   Base styles
+───────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--surface-base);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────
+   Typography scale
+───────────────────────────────────────────── */
+.type-display {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+}
+
+.type-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink-primary);
+}
+
+.type-subheading {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-body {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+.type-caption {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+.type-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink-secondary);
+}
+
+.type-kpi-xl {
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.type-kpi-lg {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+}
+
+.type-kpi-sm {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink-primary);
+}
+
+/* ─────────────────────────────────────────────
+   Focus ring
+───────────────────────────────────────────── */
+.focus-ring {
+  outline: 2px solid var(--ring-focus);
+  outline-offset: 2px;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ring-focus);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   Scrollbar
+───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-muted);
 }
