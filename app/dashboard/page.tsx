@@ -232,7 +232,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-full px-6 md:px-10 lg:px-16 py-8">
+    <div className="max-w-full px-4 md:px-10 lg:px-16 py-4 md:py-8">
       <div className="max-w-wide mx-auto space-y-10">
 
         {/* ── Page Header (no Live status) ─────────────── */}
@@ -411,6 +411,7 @@ export default function DashboardPage() {
           onClose={closePanel}
           title={panelMeta[activePanel].title}
           width="w-[440px] max-w-[90vw]"
+          mobileSheet
         >
           {/* Filter bar — hidden for site detail */}
           <div className="-mx-4 -mt-4">

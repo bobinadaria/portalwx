@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { SiteMap } from "@/components/map/SiteMap";
 import { cn } from "@/lib/utils";
 import { sitesFootprint, type SiteFootprintData } from "@/lib/dashboard-data";
+import { Map } from "lucide-react";
 
 interface SitesAccessStatusWidgetProps {
   onSiteSelect?: (site: SiteFootprintData) => void;
@@ -18,6 +19,7 @@ export function SitesAccessStatusWidget({
   sites: sitesProp,
 }: SitesAccessStatusWidgetProps) {
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null);
+  const [showMap, setShowMap] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
@@ -145,8 +147,19 @@ export function SitesAccessStatusWidget({
         </div>
       </div>
 
-      {/* ── Map — at the bottom ── */}
-      <div className="px-5 pb-5">
+      {/* ── Map toggle button — mobile only ── */}
+      <div className="flex md:hidden px-5 pb-3">
+        <button
+          onClick={() => setShowMap((v) => !v)}
+          className="flex items-center gap-1.5 type-caption text-signature hover:text-brand-d1 transition-colors"
+        >
+          <Map size={12} />
+          {showMap ? "Hide map" : "Show map"}
+        </button>
+      </div>
+
+      {/* ── Map — hidden on mobile by default ── */}
+      <div className={cn("px-5 pb-5", !showMap && "hidden md:block")}>
         <SiteMap
           sites={sitesFootprint}
           selectedSiteId={selectedId}
