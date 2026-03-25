@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 // Surface: light (on light bg) | dark (on dark bg, e.g. sidebar/topbar)
 // Size: lg = 48px (primary/secondary/danger), md = 36px (tertiary/icon/link)
 
-export type ButtonVariant = "primary" | "secondary" | "tertiary" | "danger" | "link" | "icon";
+export type ButtonVariant = "primary" | "secondary" | "tertiary" | "ghost" | "danger" | "link" | "icon";
 export type ButtonSize = "lg" | "md" | "sm";
 export type ButtonSurface = "light" | "dark";
 
@@ -28,6 +28,7 @@ const defaultSize: Record<ButtonVariant, Record<ButtonSurface, ButtonSize>> = {
   primary:   { light: "lg", dark: "md" },
   secondary: { light: "lg", dark: "md" },
   tertiary:  { light: "md", dark: "md" },
+  ghost:     { light: "md", dark: "md" },
   danger:    { light: "lg", dark: "lg" },
   link:      { light: "md", dark: "md" },
   icon:      { light: "md", dark: "md" },
@@ -91,6 +92,20 @@ const variantMap: Record<VKey, string> = {
     "bg-surface-subtle text-ink-secondary border-2 border-transparent",
     "hover:border-border-default hover:text-brand-d1",
     "active:border-border-default active:text-signature",
+    "disabled:text-ink-muted",
+  ),
+
+  /* ── Ghost ── */
+  "ghost-light": cn(
+    "bg-transparent text-ink-secondary border-2 border-transparent",
+    "hover:bg-surface-subtle hover:text-ink-primary",
+    "active:bg-surface-subtle active:text-ink-primary",
+    "disabled:text-ink-muted",
+  ),
+  "ghost-dark": cn(
+    "bg-transparent text-brand-l2 border-2 border-transparent",
+    "hover:bg-surface-subtle hover:text-ink-primary",
+    "active:bg-surface-subtle active:text-ink-primary",
     "disabled:text-ink-muted",
   ),
 
