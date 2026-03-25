@@ -241,7 +241,7 @@ export default function PeoplePage() {
   }
 
   return (
-    <div className="max-w-full px-6 md:px-10 lg:px-16 py-8 space-y-6">
+    <div className="max-w-full px-4 md:px-10 lg:px-16 py-4 md:py-8 space-y-6">
 
       {/* ── Page header ─────────────────────────── */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -251,14 +251,16 @@ export default function PeoplePage() {
             {allUsers.length.toLocaleString()} users{selectedSite ? ` at ${selectedSite}` : " in system"} · Reactive triage view
           </p>
         </div>
-        {/* Action buttons */}
+        {/* Action buttons — full set on desktop, only primary on mobile */}
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="secondary" size="md" icon={<Download size={14} />} iconRight={<ChevronDown size={12} />}>
-            Export
-          </Button>
-          <Button variant="secondary" size="md" icon={<Upload size={14} />}>
-            Import users
-          </Button>
+          <div className="hidden sm:flex items-center gap-2">
+            <Button variant="secondary" size="md" icon={<Download size={14} />} iconRight={<ChevronDown size={12} />}>
+              Export
+            </Button>
+            <Button variant="secondary" size="md" icon={<Upload size={14} />}>
+              Import users
+            </Button>
+          </div>
           <Button variant="primary" size="md" icon={<Plus size={14} />}>
             Add user
           </Button>
@@ -380,45 +382,121 @@ export default function PeoplePage() {
         </div>
       )}
 
-      {/* ── Table ───────────────────────────────── */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell header className="w-10">
-              <input
-                type="checkbox"
-                checked={allSelected}
-                ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
-                onChange={toggleAll}
-                className="h-4 w-4 rounded border-border-strong accent-signature cursor-pointer"
-                aria-label="Select all"
-              />
-            </TableCell>
-            <TableCell header>User</TableCell>
-            <TableCell header>Sites</TableCell>
-            <TableCell header>Global state</TableCell>
-            <TableCell header>Last sync</TableCell>
-          </TableRow>
-        </TableHead>
-        <tbody>
-          {filtered.map((user) => (
-            <PeopleRow
+      {/* ── Mobile card list ────────────────────── */}
+      <div className="flex flex-col gap-2 md:hidden">
+        {filtered.length === 0 ? (
+          <p className="py-12 text-center text-ink-muted type-body">
+            No users match the current filter.
+          </p>
+        ) : (
+          filtered.map((user) => (
+            <PeopleCard
               key={user.id}
               user={user}
               selected={selectedIds.has(user.id)}
               onSelect={() => toggleRow(user.id)}
               onClick={() => router.push(`/people/${user.id}`)}
             />
-          ))}
-          {filtered.length === 0 && (
+          ))
+        )}
+      </div>
+
+      {/* ── Desktop table ───────────────────────── */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHead>
             <TableRow>
-              <td colSpan={5} className="py-12 text-center text-ink-muted type-body">
-                No users match the current filter.
-              </td>
+              <TableCell header className="w-10">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
+                  onChange={toggleAll}
+                  className="h-4 w-4 rounded border-border-strong accent-signature cursor-pointer"
+                  aria-label="Select all"
+                />
+              </TableCell>
+              <TableCell header>User</TableCell>
+              <TableCell header>Sites</TableCell>
+              <TableCell header>Global state</TableCell>
+              <TableCell header>Last sync</TableCell>
             </TableRow>
+          </TableHead>
+          <tbody>
+            {filtered.map((user) => (
+              <PeopleRow
+                key={user.id}
+                user={user}
+                selected={selectedIds.has(user.id)}
+                onSelect={() => toggleRow(user.id)}
+                onClick={() => router.push(`/people/${user.id}`)}
+              />
+            ))}
+            {filtered.length === 0 && (
+              <TableRow>
+                <td colSpan={5} className="py-12 text-center text-ink-muted type-body">
+                  No users match the current filter.
+                </td>
+              </TableRow>
+            )}
+          </tbody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
+/* ── People mobile card ───────────────────── */
+function PeopleCard({
+  user,
+  selected,
+  onSelect,
+  onClick,
+}: {
+  user: PeopleListUser;
+  selected: boolean;
+  onSelect: () => void;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-3 rounded-xl border bg-surface-raised px-4 py-3 transition-colors cursor-pointer",
+        "hover:shadow-[var(--shadow-raised)] active:bg-surface-subtle",
+        selected ? "border-signature bg-brand-l2" : "border-border-default"
+      )}
+    >
+      {/* Checkbox */}
+      <input
+        type="checkbox"
+        checked={selected}
+        onClick={(e) => { e.stopPropagation(); onSelect(); }}
+        onChange={() => {}}
+        className="h-4 w-4 rounded border-border-strong accent-signature cursor-pointer shrink-0"
+        aria-label={`Select ${user.firstName} ${user.lastName}`}
+      />
+
+      {/* Avatar */}
+      <Avatar firstName={user.firstName} lastName={user.lastName} color={user.avatarColor} />
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2">
+          <p className="font-semibold text-ink-primary truncate text-sm">
+            {user.firstName} {user.lastName}
+          </p>
+          <StateBadge state={user.globalState} />
+        </div>
+        <p className="type-caption truncate">{user.email}</p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <p className="type-caption text-ink-muted truncate">{user.sites.primary}</p>
+          {user.sites.additional > 0 && (
+            <span className="type-caption text-ink-muted shrink-0">+{user.sites.additional}</span>
           )}
-        </tbody>
-      </Table>
+          <span className="type-caption text-ink-muted shrink-0 ml-auto">{user.lastSync}</span>
+        </div>
+      </div>
     </div>
   );
 }
