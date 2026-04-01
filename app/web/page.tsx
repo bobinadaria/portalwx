@@ -7,12 +7,11 @@ import {
   CalendarCheck, MapPin, Wrench, Users, Building2,
 } from "lucide-react";
 
-/* ── Brand tokens (from Figma: SIGNATURE #00CC56, SIGNATURE D1 #08916F) ── */
+/* ── Brand tokens ─────────────────────────────────────────────────────── */
 const G = {
-  brand:  "#00CC56",   // SIGNATURE — primary green
-  dark:   "#08916F",   // SIGNATURE D1 — dark teal (Admin button)
-  light:  "#e6f9f2",   // subtle bg tint (features section)
-  text:   "#1B2232",   // HSL Greyscale/Second - 1
+  brand: "#00CC56",
+  dark:  "#08916F",
+  text:  "#1B2232",
 };
 
 /* ── Features list ────────────────────────────────────────────────────── */
@@ -28,65 +27,54 @@ const features = [
   { icon: Building2,       label: "Building Information" },
 ];
 
-/* ── "Your Building" logo ─────────────────────────────────────────────── */
+/* ── Logo ─────────────────────────────────────────────────────────────── */
 function YourBuildingLogo() {
   return (
-    <div className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-2.5 shadow-sm" style={{ minWidth: 144 }}>
-      {/* Stacked chevron / leaf mark */}
+    <div className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-2.5 shadow-sm">
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <rect width="32" height="32" rx="7" fill={G.brand} />
-        {/* Two stacked chevron shapes */}
         <path d="M8 11 L16 17 L24 11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         <path d="M8 17 L16 23 L24 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
-      <span className="text-[13px] font-semibold text-[#1B2232] leading-tight">
+      <span className="text-[13px] font-semibold leading-tight" style={{ color: G.text }}>
         your<br />building
       </span>
     </div>
   );
 }
 
-/* ── iPhone 16 Pro mockup ─────────────────────────────────────────────── */
-function IPhoneMockup({ children, width = 290 }: { children: React.ReactNode; width?: number }) {
-  const BORDER = 9;
-  const R_OUTER = 46;
-  const R_INNER = 38;
+/* ── iPhone mockup ────────────────────────────────────────────────────── */
+function IPhoneMockup({ children, width = 300 }: { children: React.ReactNode; width?: number }) {
   return (
     <div className="relative select-none" style={{ width }}>
       <div
         className="relative overflow-hidden"
         style={{
-          borderRadius: R_OUTER,
-          border: `${BORDER}px solid #1c1c1e`,
+          borderRadius: 48,
+          border: "10px solid #1c1c1e",
           background: "#1c1c1e",
-          boxShadow: "0 50px 100px rgba(0,0,0,0.35), 0 20px 40px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)",
+          boxShadow: "0 60px 120px rgba(0,0,0,0.5), 0 20px 40px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.08)",
         }}
       >
-        {/* Volume + silent buttons */}
-        <div className="absolute left-0 top-[88px] w-[3px] h-[30px] bg-[#2a2a2a] rounded-r-sm" />
-        <div className="absolute left-0 top-[132px] w-[3px] h-[52px] bg-[#2a2a2a] rounded-r-sm" />
-        <div className="absolute left-0 top-[198px] w-[3px] h-[52px] bg-[#2a2a2a] rounded-r-sm" />
-        {/* Power button */}
-        <div className="absolute right-0 top-[108px] w-[3px] h-[68px] bg-[#2a2a2a] rounded-l-sm" />
+        {/* Buttons */}
+        <div className="absolute left-0 top-[90px] w-[3px] h-[30px] bg-[#2a2a2a] rounded-r-sm" />
+        <div className="absolute left-0 top-[136px] w-[3px] h-[56px] bg-[#2a2a2a] rounded-r-sm" />
+        <div className="absolute left-0 top-[206px] w-[3px] h-[56px] bg-[#2a2a2a] rounded-r-sm" />
+        <div className="absolute right-0 top-[112px] w-[3px] h-[72px] bg-[#2a2a2a] rounded-l-sm" />
 
         {/* Screen */}
-        <div className="overflow-hidden bg-[#f4f6fb]" style={{ borderRadius: R_INNER }}>
-          {/* Status bar area with Dynamic Island */}
-          <div className="relative bg-white px-5 pt-3 pb-1 flex items-center justify-between">
-            <div
-              className="absolute top-2 left-1/2 -translate-x-1/2 bg-[#1c1c1e] rounded-full"
-              style={{ width: 106, height: 30 }}
-            />
-            <span className="text-[11px] font-semibold text-[#1B2232] z-10">9:41</span>
+        <div className="overflow-hidden bg-white" style={{ borderRadius: 40 }}>
+          {/* Status bar */}
+          <div className="relative bg-white flex items-center justify-between px-5 pt-3 pb-2">
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-[#1c1c1e] rounded-full" style={{ width: 108, height: 32 }} />
+            <span className="text-[11px] font-semibold z-10" style={{ color: G.text }}>9:41</span>
             <div className="flex items-center gap-1 z-10">
-              {/* Signal bars */}
               <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
                 <rect x="0" y="4" width="3" height="7" rx="0.5" fill="#1B2232" />
                 <rect x="4.5" y="2.5" width="3" height="8.5" rx="0.5" fill="#1B2232" />
                 <rect x="9" y="0.5" width="3" height="10.5" rx="0.5" fill="#1B2232" />
                 <rect x="13.5" y="0.5" width="2.5" height="10.5" rx="0.5" fill="#1B2232" fillOpacity="0.25" />
               </svg>
-              {/* Battery */}
               <svg width="22" height="12" viewBox="0 0 22 12" fill="none">
                 <rect x="0.5" y="0.5" width="18" height="11" rx="2.5" stroke="#1B2232" strokeOpacity="0.35" />
                 <rect x="2" y="2" width="14" height="8" rx="1.5" fill="#1B2232" />
@@ -101,31 +89,65 @@ function IPhoneMockup({ children, width = 290 }: { children: React.ReactNode; wi
   );
 }
 
-/* ── Badge screen (Home screen content) ──────────────────────────────── */
+/* ── Badge / Home screen ──────────────────────────────────────────────── */
 function BadgeScreen() {
   return (
-    <div className="bg-[#f4f6fb]" style={{ minHeight: 510 }}>
-      {/* App header */}
-      <div className="bg-white px-4 py-3 border-b border-[#f0f0f0]">
-        <p className="text-[13px] font-bold text-[#1B2232]">Your Building</p>
+    <div className="bg-[#f5f6f9]" style={{ minHeight: 520 }}>
+      {/* Building photo header */}
+      <div className="relative h-44 overflow-hidden">
+        {/* Simulated building exterior photo */}
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 176" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="bldg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#7ba8c4" />
+              <stop offset="40%" stopColor="#5e8faa" />
+              <stop offset="100%" stopColor="#3d6a85" />
+            </linearGradient>
+            <linearGradient id="bldgOverlay" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor="transparent" />
+              <stop offset="100%" stopColor="rgba(0,0,0,0.5)" />
+            </linearGradient>
+          </defs>
+          <rect width="300" height="176" fill="url(#bldg)" />
+          {/* Glass panels */}
+          {Array.from({ length: 8 }).map((_, c) =>
+            Array.from({ length: 6 }).map((_, r) => (
+              <rect key={`${c}-${r}`} x={c * 38 + r * 4} y={r * 30 - 10} width="32" height="26"
+                fill="white" fillOpacity={0.06 + ((c + r) % 3) * 0.04}
+                stroke="white" strokeOpacity="0.12" strokeWidth="0.5" />
+            ))
+          )}
+          <rect width="300" height="176" fill="url(#bldgOverlay)" />
+        </svg>
+        {/* Building name overlay */}
+        <div className="absolute bottom-3 left-3 right-3">
+          <p className="text-white font-bold text-[16px] drop-shadow">Your Building</p>
+          <p className="text-white/70 text-[11px]">Prague Business Park</p>
+        </div>
       </div>
 
-      {/* Mobile Badge card */}
-      <div className="mx-3 mt-3 rounded-2xl overflow-hidden" style={{ background: G.brand }}>
+      {/* Mobile badge card */}
+      <div className="mx-3 -mt-4 rounded-2xl overflow-hidden shadow-lg relative z-10" style={{ background: G.brand }}>
         <div className="px-4 pt-3 pb-1">
           <p className="text-[8px] uppercase tracking-widest font-semibold text-white/70">Mobile Badge</p>
         </div>
         <div className="px-4 pb-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[11px] bg-white/25 text-white">LM</div>
-          <div>
-            <p className="text-[11px] font-bold text-white">Laurie Moore</p>
-            <p className="text-[9px] text-white/70">Badge #502</p>
+          {/* Avatar photo simulation */}
+          <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/30">
+            <svg viewBox="0 0 44 44" width="44" height="44">
+              <rect width="44" height="44" fill="#c8a882" />
+              <ellipse cx="22" cy="17" rx="8" ry="9" fill="#e8c9a8" />
+              <ellipse cx="22" cy="38" rx="14" ry="12" fill="#d4a87a" />
+            </svg>
           </div>
-          <div className="ml-auto bg-white/20 rounded px-1.5 py-0.5">
-            <p className="text-[7px] font-bold text-white tracking-widest">HID</p>
+          <div>
+            <p className="text-[12px] font-bold text-white">Laurie Moore</p>
+            <p className="text-[10px] text-white/70">Badge #502</p>
+          </div>
+          <div className="ml-auto bg-white/20 rounded px-2 py-1">
+            <p className="text-[8px] font-bold text-white tracking-widest">HID</p>
           </div>
         </div>
-        {/* Dots */}
         <div className="px-4 pb-3 flex gap-1">
           {[20, 12, 12].map((w, i) => (
             <div key={i} className="h-1 rounded-full bg-white/30" style={{ width: w }} />
@@ -134,23 +156,36 @@ function BadgeScreen() {
       </div>
 
       {/* Getting started */}
-      <div className="mx-3 mt-2 bg-white rounded-xl flex items-center justify-between px-4 py-3">
-        <p className="text-[11px] font-semibold text-[#1B2232]">Getting started</p>
-        <span className="text-[#aaa]">›</span>
+      <div className="mx-3 mt-2 bg-white rounded-xl flex items-center justify-between px-4 py-3 shadow-sm">
+        <p className="text-[11px] font-semibold" style={{ color: G.text }}>Getting started</p>
+        <span className="text-[#aaa] text-sm">›</span>
       </div>
 
-      {/* Content card */}
-      <div className="mx-3 mt-2 rounded-xl overflow-hidden bg-white">
-        <div className="h-16 flex items-end p-3" style={{ background: `linear-gradient(135deg, ${G.brand}22, ${G.brand}11)` }}>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ background: `${G.brand}40` }} />
-            <p className="text-[8px] font-semibold" style={{ color: G.dark }}>Your Building</p>
+      {/* Content card with image */}
+      <div className="mx-3 mt-2 rounded-xl overflow-hidden bg-white shadow-sm">
+        <div className="h-14 overflow-hidden relative">
+          <svg viewBox="0 0 280 56" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="cardImg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#a8d5c2" />
+                <stop offset="100%" stopColor="#6ab89a" />
+              </linearGradient>
+            </defs>
+            <rect width="280" height="56" fill="url(#cardImg)" />
+            {/* Subtle glass effect */}
+            <rect x="0" y="0" width="280" height="28" fill="white" fillOpacity="0.1" />
+          </svg>
+          <div className="absolute bottom-2 left-3 flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded bg-white/30 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-sm bg-white/70" />
+            </div>
+            <p className="text-[9px] font-semibold text-white">your building</p>
           </div>
         </div>
       </div>
 
       {/* Bottom tab bar */}
-      <div className="absolute bottom-0 inset-x-0 bg-white border-t border-[#f0f0f0] px-2 py-2">
+      <div className="absolute bottom-0 inset-x-0 bg-white border-t border-[#f0f0f0] px-3 pt-2 pb-3">
         <div className="flex justify-around items-center">
           {[
             { label: "Home", active: true },
@@ -158,11 +193,16 @@ function BadgeScreen() {
             { label: "About", active: false },
             { label: "Profile", active: false },
           ].map(({ label, active }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <div className="w-5 h-5 rounded-lg" style={{ background: active ? G.brand : "#e5e7eb" }} />
+            <div key={label} className="flex flex-col items-center gap-0.5">
+              <div className="w-6 h-6 rounded-lg" style={{ background: active ? G.brand : "#e5e7eb" }} />
               <span className="text-[8px]" style={{ color: active ? G.dark : "#9ca3af" }}>{label}</span>
             </div>
           ))}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: G.brand }}>
+              <span className="text-white text-[10px] font-bold">+</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -172,40 +212,71 @@ function BadgeScreen() {
 /* ── Restaurants screen ───────────────────────────────────────────────── */
 function RestaurantsScreen() {
   const items = [
-    { name: "Bam Bama Bistro",  color: "#c8a96e", special: true },
-    { name: "East Garden",      color: "#7ba88e", special: false },
-    { name: "Sakura Kitchen",   color: "#d4847a", special: false },
+    {
+      name: "Bam Bama Bistro", addr: "3 Grove Rd, Surbiton KT6 4BS, London · 2 Comments",
+      special: true,
+      photo: { from: "#c8a055", to: "#a07830" },
+    },
+    {
+      name: "East Garden", addr: "3 Grove Rd, Surbiton KT6 4BS, London · 2 Comments",
+      special: false,
+      photo: { from: "#6a9e78", to: "#4a7a58" },
+    },
+    {
+      name: "Sakura Kitchen", addr: "3 Grove Rd, Surbiton KT6 4BS, London · 2 Comments",
+      special: false,
+      photo: { from: "#c47a70", to: "#a05850" },
+    },
   ];
   return (
-    <div className="relative bg-[#f4f6fb]" style={{ minHeight: 570 }}>
-      {/* Back bar */}
+    <div className="relative bg-white" style={{ minHeight: 580 }}>
+      {/* Back nav */}
       <div className="bg-white px-4 py-2.5 flex items-center gap-2 border-b border-[#f0f0f0]">
-        <span className="text-[11px]" style={{ color: G.brand }}>‹</span>
-        <p className="text-[10px] text-[#aaa]">Amenities</p>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M7 1L1 7L7 13" stroke={G.brand} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <p className="text-[11px] text-[#aaa]">Amenities</p>
       </div>
       <div className="px-4 py-3">
-        <p className="text-[15px] font-bold text-[#1B2232]">Restaurants</p>
+        <p className="text-[18px] font-bold" style={{ color: G.text }}>Restaurants</p>
       </div>
-      <div className="px-3 space-y-2">
-        {items.map(({ name, color, special }) => (
-          <div key={name} className="bg-white rounded-xl overflow-hidden">
-            <div className="relative h-[66px]" style={{ background: color }}>
-              <span className="absolute top-2 left-2 bg-black/30 text-white text-[6px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wide">London</span>
+
+      <div className="px-3 space-y-3">
+        {items.map(({ name, addr, special, photo }) => (
+          <div key={name} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#f0f0f0]">
+            {/* Photo with realistic gradient + texture */}
+            <div className="relative h-20 overflow-hidden">
+              <svg viewBox="0 0 280 80" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id={`photo-${name}`} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={photo.from} />
+                    <stop offset="100%" stopColor={photo.to} />
+                  </linearGradient>
+                </defs>
+                <rect width="280" height="80" fill={`url(#photo-${name})`} />
+                {/* Food texture dots */}
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <circle key={i} cx={20 + i * 22} cy={20 + (i % 3) * 15} r={4 + (i % 3) * 2}
+                    fill="white" fillOpacity={0.08 + (i % 4) * 0.03} />
+                ))}
+                <rect width="280" height="80" fill="rgba(0,0,0,0.12)" />
+              </svg>
+              <span className="absolute top-2 left-2 bg-black/40 text-white text-[7px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide">London</span>
               {special && (
-                <span className="absolute top-2 right-2 text-white text-[6px] px-1.5 py-0.5 rounded font-semibold" style={{ background: G.brand }}>
-                  SPECIAL OFFER!
-                </span>
+                <span className="absolute top-2 right-2 text-white text-[7px] px-2 py-0.5 rounded font-semibold uppercase"
+                  style={{ background: G.brand }}>Special Offer!</span>
               )}
             </div>
             <div className="px-3 py-2">
-              <p className="text-[10px] font-semibold text-[#1B2232]">{name}</p>
-              <p className="text-[8px] text-[#aaa]">3 Grove Rd · 2 Comments</p>
+              <p className="text-[11px] font-semibold" style={{ color: G.text }}>{name}</p>
+              <p className="text-[9px] text-[#9ca3af] mt-0.5">{addr}</p>
             </div>
           </div>
         ))}
       </div>
+
       {/* Bottom tab bar */}
-      <div className="absolute bottom-0 inset-x-0 bg-white border-t border-[#f0f0f0] px-2 py-2">
+      <div className="absolute bottom-0 inset-x-0 bg-white border-t border-[#f0f0f0] px-3 pt-2 pb-3">
         <div className="flex justify-around items-center">
           {[
             { label: "Home", active: false },
@@ -213,61 +284,56 @@ function RestaurantsScreen() {
             { label: "About", active: false },
             { label: "Profile", active: false },
           ].map(({ label, active }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <div className="w-5 h-5 rounded-lg" style={{ background: active ? G.brand : "#e5e7eb" }} />
+            <div key={label} className="flex flex-col items-center gap-0.5">
+              <div className="w-6 h-6 rounded-lg" style={{ background: active ? G.brand : "#e5e7eb" }} />
               <span className="text-[8px]" style={{ color: active ? G.dark : "#9ca3af" }}>{label}</span>
             </div>
           ))}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#e5e7eb" }}>
+              <span className="text-[#9ca3af] text-[10px] font-bold">+</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── QR code block ───────────────────────────────────────────────────── */
+/* ── QR Code ──────────────────────────────────────────────────────────── */
 function QRCodeBlock() {
   return (
     <div className="bg-white rounded-2xl p-3 shadow-lg inline-flex">
-      <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
-        {/* Top-left finder */}
-        <rect x="4" y="4" width="28" height="28" rx="3" fill="#1B2232" />
-        <rect x="8" y="8" width="20" height="20" rx="2" fill="white" />
-        <rect x="12" y="12" width="12" height="12" rx="1" fill="#1B2232" />
-        {/* Top-right finder */}
-        <rect x="64" y="4" width="28" height="28" rx="3" fill="#1B2232" />
-        <rect x="68" y="8" width="20" height="20" rx="2" fill="white" />
-        <rect x="72" y="12" width="12" height="12" rx="1" fill="#1B2232" />
-        {/* Bottom-left finder */}
-        <rect x="4" y="64" width="28" height="28" rx="3" fill="#1B2232" />
-        <rect x="8" y="68" width="20" height="20" rx="2" fill="white" />
-        <rect x="12" y="72" width="12" height="12" rx="1" fill="#1B2232" />
-        {/* Data dots — pseudo-random pattern */}
-        {Array.from({ length: 11 }).map((_, col) =>
-          Array.from({ length: 5 }).map((_, row) => {
-            const x = 40 + col * 5;
-            const y = 4 + row * 5;
-            return ((col * 7 + row * 13 + col * row) % 17 > 7)
-              ? <rect key={`a${col}-${row}`} x={x} y={y} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null;
-          })
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+        <rect x="4" y="4" width="30" height="30" rx="3" fill="#1B2232" />
+        <rect x="8" y="8" width="22" height="22" rx="2" fill="white" />
+        <rect x="12" y="12" width="14" height="14" rx="1" fill="#1B2232" />
+        <rect x="66" y="4" width="30" height="30" rx="3" fill="#1B2232" />
+        <rect x="70" y="8" width="22" height="22" rx="2" fill="white" />
+        <rect x="74" y="12" width="14" height="14" rx="1" fill="#1B2232" />
+        <rect x="4" y="66" width="30" height="30" rx="3" fill="#1B2232" />
+        <rect x="8" y="70" width="22" height="22" rx="2" fill="white" />
+        <rect x="12" y="74" width="14" height="14" rx="1" fill="#1B2232" />
+        {Array.from({ length: 12 }).map((_, col) =>
+          Array.from({ length: 5 }).map((_, row) =>
+            ((col * 7 + row * 13 + col * row) % 17 > 7)
+              ? <rect key={`a${col}-${row}`} x={42 + col * 5} y={4 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
+              : null
+          )
         )}
         {Array.from({ length: 5 }).map((_, col) =>
-          Array.from({ length: 11 }).map((_, row) => {
-            const x = 4 + col * 5;
-            const y = 40 + row * 5;
-            return ((col * 11 + row * 5 + col + row) % 13 > 5)
-              ? <rect key={`b${col}-${row}`} x={x} y={y} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null;
-          })
+          Array.from({ length: 12 }).map((_, row) =>
+            ((col * 11 + row * 5 + col + row) % 13 > 5)
+              ? <rect key={`b${col}-${row}`} x={4 + col * 5} y={42 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
+              : null
+          )
         )}
-        {Array.from({ length: 11 }).map((_, col) =>
-          Array.from({ length: 11 }).map((_, row) => {
-            const x = 40 + col * 5;
-            const y = 40 + row * 5;
-            return ((col * 3 + row * 17 + (col ^ row)) % 19 > 9)
-              ? <rect key={`c${col}-${row}`} x={x} y={y} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null;
-          })
+        {Array.from({ length: 12 }).map((_, col) =>
+          Array.from({ length: 12 }).map((_, row) =>
+            ((col * 3 + row * 17 + (col ^ row)) % 19 > 9)
+              ? <rect key={`c${col}-${row}`} x={42 + col * 5} y={42 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
+              : null
+          )
         )}
       </svg>
     </div>
@@ -281,65 +347,67 @@ export default function WebLandingPage() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "Lexend, sans-serif", backgroundColor: "white" }}>
 
-      {/* ══════════════════════════════════════════════════════
-          HERO — light glass building background
-      ══════════════════════════════════════════════════════ */}
-      <section
-        className="relative overflow-visible"
-        style={{ minHeight: "100vh" }}
-      >
-        {/* ── Glass building background ─────────────────────── */}
+      {/* ════════════════════════════════════════════════
+          HERO — dark glass building photo simulation
+      ════════════════════════════════════════════════ */}
+      <section className="relative overflow-visible" style={{ minHeight: "100vh" }}>
+
+        {/* Background: dark glass skyscraper */}
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
             <defs>
-              {/* Base: pale teal-blue — matches Figma building photo ambiance */}
-              <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#cef5ed" />
-                <stop offset="40%" stopColor="#d8f5ef" />
-                <stop offset="100%" stopColor="#b8ede3" />
+              {/* Dark steel-blue building photo base */}
+              <linearGradient id="heroBg" x1="0.2" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stopColor="#2c3e50" />
+                <stop offset="35%"  stopColor="#3d5a70" />
+                <stop offset="70%"  stopColor="#4a7090" />
+                <stop offset="100%" stopColor="#2a4a60" />
               </linearGradient>
-              {/* Glass panel fill */}
-              <linearGradient id="glassPanel" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-                <stop offset="100%" stopColor="white" stopOpacity="0.06" />
+              {/* Glass panel shimmer */}
+              <linearGradient id="panelShimmer" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                <stop offset="50%"  stopColor="white" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="white" stopOpacity="0.03" />
               </linearGradient>
-              {/* Left dark overlay — makes white text legible */}
-              <linearGradient id="leftVignette" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%"   stopColor="#1B2232" stopOpacity="0.60" />
-                <stop offset="38%"  stopColor="#1B2232" stopOpacity="0.30" />
-                <stop offset="70%"  stopColor="#1B2232" stopOpacity="0.05" />
-                <stop offset="100%" stopColor="#1B2232" stopOpacity="0" />
+              {/* Reflection highlight */}
+              <linearGradient id="panelHighlight" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stopColor="#7ec8e3" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#4a90b8" stopOpacity="0.05" />
               </linearGradient>
-              {/* Bottom fade */}
-              <linearGradient id="bottomFade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="70%"  stopColor="transparent" />
-                <stop offset="100%" stopColor="#d8f5ef" stopOpacity="0.6" />
+              {/* Left dark overlay for text legibility */}
+              <linearGradient id="leftDark" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="#1a2535" stopOpacity="0.85" />
+                <stop offset="30%"  stopColor="#1a2535" stopOpacity="0.55" />
+                <stop offset="55%"  stopColor="#1a2535" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#1a2535" stopOpacity="0" />
+              </linearGradient>
+              {/* Bottom fade to white (for smooth transition) */}
+              <linearGradient id="bottomWhite" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="75%" stopColor="transparent" />
+                <stop offset="100%" stopColor="#ffffff" stopOpacity="0.12" />
               </linearGradient>
             </defs>
 
-            {/* Background fill */}
             <rect width="100%" height="100%" fill="url(#heroBg)" />
 
-            {/* Glass facade panels — perspective grid on the right */}
-            {Array.from({ length: 12 }).map((_, col) =>
-              Array.from({ length: 16 }).map((_, row) => {
-                const x = 340 + col * 84 + row * 10;
-                const y = row * 68 - 60;
-                const w = 72;
-                const h = 60;
-                const alpha = 0.6 + ((col + row) % 5) * 0.08;
-                const bright = (col + row) % 4 === 0;
+            {/* Glass facade — perspective panels (skyscraper look) */}
+            {Array.from({ length: 14 }).map((_, col) =>
+              Array.from({ length: 18 }).map((_, row) => {
+                const x = 260 + col * 86 + row * 12;
+                const y = row * 62 - 80;
+                const w = 74;
+                const h = 54;
+                const bright = (col * 3 + row * 2) % 7 === 0;
+                const mid    = (col + row) % 4 === 1;
                 return (
                   <g key={`${col}-${row}`}>
                     <rect x={x} y={y} width={w} height={h}
-                      fill="url(#glassPanel)"
-                      stroke="white"
-                      strokeWidth="0.8"
-                      strokeOpacity={alpha * 0.55}
+                      fill={bright ? "url(#panelHighlight)" : "url(#panelShimmer)"}
+                      stroke="white" strokeOpacity={0.12 + (col % 3) * 0.04} strokeWidth="0.7"
                     />
-                    {bright && (
-                      <rect x={x + 5} y={y + 5} width={w * 0.45} height={h * 0.5}
-                        fill="white" fillOpacity={0.12} rx="1"
+                    {mid && (
+                      <rect x={x + 3} y={y + 3} width={w * 0.5} height={h * 0.55}
+                        fill="white" fillOpacity={0.09} rx="1"
                       />
                     )}
                   </g>
@@ -347,14 +415,15 @@ export default function WebLandingPage() {
               })
             )}
 
-            {/* Left vignette for text legibility */}
-            <rect width="100%" height="100%" fill="url(#leftVignette)" />
-            {/* Bottom fade */}
-            <rect width="100%" height="100%" fill="url(#bottomFade)" />
+            {/* Sky gradient at the very top */}
+            <rect width="100%" height="30%" fill="url(#bottomWhite)" />
+
+            {/* Left overlay: text area */}
+            <rect width="100%" height="100%" fill="url(#leftDark)" />
           </svg>
         </div>
 
-        {/* ── Topbar ────────────────────────────────────────── */}
+        {/* ── Topbar ──────────────────────────────────── */}
         <nav className="relative z-20 flex items-center justify-between px-[30px] py-[30px]">
           <YourBuildingLogo />
           <div className="flex items-center gap-2">
@@ -365,20 +434,18 @@ export default function WebLandingPage() {
             >
               Administration
             </Link>
-            {/* Flag */}
             <div className="flex h-12 w-12 items-center justify-center rounded-lg text-lg"
-              style={{ background: "rgba(27,34,50,0.5)" }}>
+              style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(4px)" }}>
               🇨🇿
             </div>
           </div>
         </nav>
 
-        {/* ── Hero content ──────────────────────────────────── */}
-        <div className="relative z-10 flex flex-col md:flex-row items-end px-[138px] pt-8 pb-0">
+        {/* ── Hero content: text left, phone right ──── */}
+        <div className="relative z-10 flex items-end px-[138px] pt-8 pb-0">
 
-          {/* LEFT — headline + QR + badges */}
-          <div className="flex-1 pb-20 max-w-[680px]">
-            {/* Headline */}
+          {/* LEFT */}
+          <div className="flex-1 pb-24 max-w-[680px]">
             <h1
               className="text-white font-bold mb-10"
               style={{ fontSize: 60, lineHeight: "80px", letterSpacing: "-0.02em" }}
@@ -387,93 +454,76 @@ export default function WebLandingPage() {
               and its&nbsp;amenities
             </h1>
 
-            {/* QR + description + badges */}
-            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid relative">
-              {/* QR code */}
-              <div className="col-1 row-1">
-                <QRCodeBlock />
-              </div>
-              {/* Description text */}
-              <div className="col-1 row-1 ml-[200px] mt-0 w-[227px]">
-                <p className="text-white font-semibold text-[15px] leading-snug mt-6">
-                  Scan the QR code to<br />download the app for free
+            {/* QR + description + badges row */}
+            <div className="flex items-start gap-6">
+              <QRCodeBlock />
+              <div className="pt-2">
+                <p className="text-white font-semibold text-[16px] leading-snug mb-4">
+                  Scan the QR code<br />to download the app for free
                 </p>
-              </div>
-              {/* iOS badge */}
-              <div className="col-1 row-1 ml-[200px] mt-[96px]">
-                <AppStoreBadge store="apple" href="#" size="sm" />
-              </div>
-              {/* Android badge */}
-              <div className="col-1 row-1 ml-[332px] mt-[96px]">
-                <AppStoreBadge store="google" href="#" size="sm" />
+                <div className="flex flex-col gap-2.5">
+                  <AppStoreBadge store="apple"  href="#" size="sm" />
+                  <AppStoreBadge store="google" href="#" size="sm" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* RIGHT — Home page phone (extends below hero) */}
+          {/* RIGHT — phone overflows well into white section below */}
           <div
             className="hidden md:block shrink-0"
-            style={{ marginBottom: -160, marginRight: -40 }}
+            style={{ marginBottom: -280, paddingRight: 60 }}
           >
-            <IPhoneMockup width={310}>
+            <IPhoneMockup width={320}>
               <BadgeScreen />
             </IPhoneMockup>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════
-          INTRO — white section
-      ══════════════════════════════════════════════════════ */}
-      <section
-        className="relative bg-white z-10"
-        style={{ paddingTop: 200, paddingBottom: 100 }}
-      >
+      {/* ════════════════════════════════════════════════
+          INTRO — white, phone visible floating right
+      ════════════════════════════════════════════════ */}
+      <section className="relative bg-white z-10" style={{ paddingTop: 320, paddingBottom: 80 }}>
         <div className="px-[138px]">
           <div style={{ maxWidth: 670 }}>
-            <p className="font-bold text-[18px] leading-[1.6] mb-5" style={{ color: G.text }}>
-              The mobile app grants you a virtual key to premium services and amenities in your office building.
-              Get them all at your fingertips!
+            <p className="font-bold text-[18px] leading-[1.6] mb-4" style={{ color: G.text }}>
+              The mobile app grants you a virtual key to premium services and amenities
+              in your office building. Get them all at your fingertips!
             </p>
             <p className="text-[14px] leading-[1.7] text-[#6b7280]">
-              Complex Name mobile app is a mainstay of a smart workplace platform delivered by Sharry
-              for Skanska as a property developer.
+              Complex Name mobile app is a mainstay of a smart workplace platform
+              delivered by Sharry for Skanska as a property developer.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════
-          FEATURES — mint bg, Restaurants phone LEFT, grid RIGHT
-      ══════════════════════════════════════════════════════ */}
-      <section
-        className="relative overflow-hidden"
-        style={{ backgroundColor: G.light, paddingTop: 80, paddingBottom: 80 }}
-      >
-        {/* Decorative circle — matches Figma Ellipse 19 */}
+      {/* ════════════════════════════════════════════════
+          FEATURES — WHITE bg (matches Figma), phone left, grid right
+      ════════════════════════════════════════════════ */}
+      <section className="relative bg-white overflow-hidden" style={{ paddingTop: 80, paddingBottom: 100 }}>
+
+        {/* Decorative circle — Figma Ellipse 19 */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full pointer-events-none"
           style={{
-            left: -80,
-            top: 300,
-            width: 560,
-            height: 560,
-            background: `${G.brand}12`,
+            left: -100, top: 160,
+            width: 560, height: 560,
+            background: `${G.brand}10`,
+            filter: "blur(2px)",
           }}
           aria-hidden="true"
         />
 
         <div className="relative px-[138px]">
-          <div className="flex flex-col md:flex-row items-center gap-[168px]">
+          <div className="flex flex-col md:flex-row items-center gap-[120px]">
 
             {/* Restaurants phone — LEFT */}
             <div className="shrink-0 relative">
-              <div
-                className="absolute rounded-full blur-3xl"
-                style={{ inset: -50, background: `${G.brand}15` }}
-                aria-hidden="true"
-              />
-              <IPhoneMockup width={310}>
+              <div className="absolute rounded-full blur-3xl"
+                style={{ inset: -60, background: `${G.brand}10` }} aria-hidden="true" />
+              <IPhoneMockup width={320}>
                 <RestaurantsScreen />
               </IPhoneMockup>
             </div>
@@ -487,7 +537,7 @@ export default function WebLandingPage() {
                 Enjoy first-class features
               </h2>
 
-              <div className="grid grid-cols-3 gap-x-6 gap-y-10 mb-10">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-10 mb-10">
                 {features.map(({ icon: Icon, label }) => (
                   <div key={label} className="flex flex-col items-center gap-3">
                     <div
@@ -496,7 +546,9 @@ export default function WebLandingPage() {
                     >
                       <Icon size={28} color="white" strokeWidth={1.6} />
                     </div>
-                    <p className="text-center text-[13px] font-medium text-[#374151] leading-snug">{label}</p>
+                    <p className="text-center text-[13px] font-medium leading-snug" style={{ color: G.text }}>
+                      {label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -504,7 +556,7 @@ export default function WebLandingPage() {
               <p className="text-[#6b7280] text-sm mb-6">... and many more!</p>
 
               <div className="flex gap-3 flex-wrap">
-                <AppStoreBadge store="apple" href="#" size="md" />
+                <AppStoreBadge store="apple"  href="#" size="md" />
                 <AppStoreBadge store="google" href="#" size="md" />
               </div>
             </div>
@@ -512,40 +564,30 @@ export default function WebLandingPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════
+      {/* ════════════════════════════════════════════════
           FOOTER
-      ══════════════════════════════════════════════════════ */}
+      ════════════════════════════════════════════════ */}
       <footer className="bg-white border-t border-[#f0f0f0] py-12 px-[138px]">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-10">
 
-          {/* Menu */}
           <div>
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] mb-4">Menu</p>
             <ul className="space-y-2.5">
-              {[
-                { label: "Home", href: "/web" },
-                { label: "Administration", href: "/login" },
-              ].map(({ label, href }) => (
-                <li key={label}>
-                  <Link href={href} className="text-[13px]" style={{ color: G.text }}>{label}</Link>
-                </li>
+              {[{ label: "Home", href: "/web" }, { label: "Administration", href: "/login" }].map(({ label, href }) => (
+                <li key={label}><Link href={href} className="text-[13px]" style={{ color: G.text }}>{label}</Link></li>
               ))}
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] mb-4">Legal &amp; Privacy</p>
             <ul className="space-y-2.5">
               {["Terms & Conditions", "Privacy policy", "Data protection", "Agreement", "Security"].map(item => (
-                <li key={item}>
-                  <a href="#" className="text-[13px]" style={{ color: G.text }}>{item}</a>
-                </li>
+                <li key={item}><a href="#" className="text-[13px]" style={{ color: G.text }}>{item}</a></li>
               ))}
             </ul>
           </div>
 
-          {/* Address */}
           <div>
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] mb-4">ComplexName Address</p>
             <address className="not-italic text-[13px] leading-loose" style={{ color: G.text }}>
@@ -554,20 +596,16 @@ export default function WebLandingPage() {
             </address>
           </div>
 
-          {/* Map */}
           <div>
             <div className="h-40 rounded-2xl overflow-hidden" style={{ background: "#e2ecf0" }}>
               <svg viewBox="0 0 220 160" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
                 <rect width="220" height="160" fill="#e2ecf0" />
-                {/* Streets */}
                 <path d="M0 80 Q55 60 110 72 Q165 85 220 68" stroke="white" strokeWidth="7" fill="none" strokeLinecap="round" />
                 <path d="M65 0 Q72 44 68 80 Q64 112 72 160" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
                 <path d="M110 0 L115 160" stroke="white" strokeWidth="3" fill="none" />
                 <path d="M0 110 L220 104" stroke="white" strokeWidth="3" fill="none" />
-                {/* Location pin */}
                 <circle cx="110" cy="74" r="11" fill={G.brand} stroke="white" strokeWidth="2.5" />
                 <circle cx="110" cy="74" r="4.5" fill="white" />
-                {/* Label */}
                 <rect x="58" y="50" width="104" height="16" rx="4" fill="white" fillOpacity="0.95" />
                 <text x="110" y="62" textAnchor="middle" fontSize="7.5" fill="#374151" fontFamily="Lexend, system-ui" fontWeight="600">BRNO-NOVÝ LISKOVEC</text>
               </svg>
@@ -575,10 +613,8 @@ export default function WebLandingPage() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-[#f0f0f0] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-[#f0f0f0] pt-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Sharry wordmark */}
             <svg viewBox="0 0 72 20" width="72" height="20" fill="none">
               <circle cx="10" cy="10" r="8" fill={G.brand} />
               <circle cx="10" cy="10" r="3.5" fill="white" />
