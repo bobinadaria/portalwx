@@ -201,10 +201,18 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
 
       {/* ── Desktop sidebar ─────────────────────── */}
       <aside className="hidden md:flex h-full w-56 shrink-0 flex-col border-r border-border-default bg-surface-raised overflow-y-auto">
-        <div className="flex h-14 items-center px-4 border-b border-border-default shrink-0">
-          <Link href="/" className="type-heading text-signature hover:opacity-80 transition-opacity">
-            Portal WX
-          </Link>
+        <div className="flex h-14 items-center px-3 border-b border-border-default shrink-0">
+          <div className="flex w-full gap-0.5 rounded-lg bg-surface-subtle p-0.5">
+            <Link
+              href="/dashboard"
+              className="flex-1 rounded-md px-2 py-1.5 text-center text-xs font-medium text-ink-secondary transition-colors hover:text-ink-primary"
+            >
+              Portal WX
+            </Link>
+            <span className="flex-1 rounded-md bg-surface-raised px-2 py-1.5 text-center text-xs font-medium text-ink-primary shadow-sm">
+              Design System
+            </span>
+          </div>
         </div>
         <NavContent pathname={pathname} />
       </aside>
@@ -218,8 +226,8 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
         >
           <Menu size={20} />
         </button>
-        <Link href="/" className="text-[15px] font-semibold text-signature">
-          Portal WX DS
+        <Link href="/dashboard" className="text-[13px] font-medium text-ink-secondary hover:text-ink-primary transition-colors">
+          ← Portal WX
         </Link>
         <div className="w-9" />
       </header>
@@ -241,7 +249,7 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
       >
         <div className="flex h-14 shrink-0 items-center justify-between px-4 border-b border-border-default">
           <Link href="/" className="type-heading text-signature">
-            Portal WX DS
+            Design System
           </Link>
           <button
             onClick={() => setOpen(false)}

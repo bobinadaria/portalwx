@@ -60,6 +60,12 @@ export function SiteMap({ sites, selectedSiteId, onSiteClick, className }: SiteM
       map.on("load", () => {
         if (!alive) return;
         addMarkers(mapboxgl.default, map);
+        // Fit bounds on initial load when no site is selected
+        if (!selectedSiteId && sites.length > 0) {
+          const bounds = new mapboxgl.default.LngLatBounds();
+          sites.forEach((s) => bounds.extend(s.coordinates));
+          map.fitBounds(bounds, { padding: 50, maxZoom: 6 });
+        }
       });
     });
 
@@ -87,14 +93,28 @@ export function SiteMap({ sites, selectedSiteId, onSiteClick, className }: SiteM
   }, [sites, selectedSiteId]);
 
   useEffect(() => {
-    if (!mapRef.current || !selectedSiteId) return;
-    const site = sites.find((s) => s.id === selectedSiteId);
-    if (!site) return;
-    mapRef.current.flyTo({
-      center: site.coordinates,
-      zoom: 9,
-      duration: 900,
-    });
+    if (!mapRef.current) return;
+    if (selectedSiteId) {
+      const site = sites.find((s) => s.id === selectedSiteId);
+      if (!site) return;
+      mapRef.current.flyTo({
+        center: site.coordinates,
+        zoom: 9,
+        duration: 900,
+      });
+    } else if (sites.length > 0) {
+      // Zoom to fit all sites
+      import("mapbox-gl").then((mapboxgl) => {
+        if (!mapRef.current) return;
+        const bounds = new mapboxgl.default.LngLatBounds();
+        sites.forEach((s) => bounds.extend(s.coordinates));
+        mapRef.current.fitBounds(bounds, {
+          padding: 50,
+          duration: 900,
+          maxZoom: 6,
+        });
+      });
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSiteId]);
 

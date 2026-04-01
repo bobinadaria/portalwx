@@ -594,3 +594,157 @@ export function getFilteredSites(site?: string): SiteFootprintData[] {
   if (!site) return sitesFootprint;
   return sitesFootprint.filter((s) => s.name === site);
 }
+
+// ── Parking ────────────────────────────────────────────
+
+export interface ParkingData {
+  avgOccupancy: number;
+  peakOccupancy: number;
+  totalSpots: number;
+  occupiedSpots: number;
+  blocklistHits: number;
+  change: string;
+  changeType: "positive" | "negative" | "neutral";
+  trend: number[];
+}
+
+export const parkingData: ParkingData = {
+  avgOccupancy: 78,
+  peakOccupancy: 91,
+  totalSpots: 400,
+  occupiedSpots: 312,
+  blocklistHits: 3,
+  change: "+3%",
+  changeType: "neutral",
+  trend: [71, 74, 76, 79, 82, 78, 78],
+};
+
+export const parkingOccupancyByHour = {
+  labels: ["6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"],
+  values: [12, 28, 62, 84, 88, 91, 86, 82, 79, 75, 68, 44],
+};
+
+export const parkingOccupancyByDay = {
+  labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  values: [74, 79, 83, 81, 71],
+};
+
+// ── Agreements ────────────────────────────────────────
+
+export interface AgreementsData {
+  signatureRate: number;
+  totalRequired: number;
+  signed: number;
+  unsigned: number;
+  change: string;
+  changeType: "positive" | "negative" | "neutral";
+  trend: number[];
+  unsignedList: { name: string; type: string; dueDate: string; count: number }[];
+}
+
+export const agreementsData: AgreementsData = {
+  signatureRate: 94,
+  totalRequired: 3200,
+  signed: 3008,
+  unsigned: 192,
+  change: "+2%",
+  changeType: "positive",
+  trend: [88, 90, 91, 92, 93, 94, 94],
+  unsignedList: [
+    { name: "NDA — Standard", type: "Mandatory", dueDate: "Mar 31, 2026", count: 84 },
+    { name: "IT Security Policy", type: "Mandatory", dueDate: "Mar 31, 2026", count: 52 },
+    { name: "Office Safety Rules", type: "Mandatory", dueDate: "Apr 15, 2026", count: 36 },
+    { name: "Remote Work Policy", type: "Optional", dueDate: "Apr 30, 2026", count: 20 },
+  ],
+};
+
+// ── Content (News / Polls / Forums) ───────────────────
+
+export interface ContentData {
+  engagementRate: number;
+  newsViews: number;
+  pollParticipation: number;
+  forumReads: number;
+  change: string;
+  changeType: "positive" | "negative" | "neutral";
+  trend: number[];
+}
+
+export const contentData: ContentData = {
+  engagementRate: 43,
+  newsViews: 4200,
+  pollParticipation: 67,
+  forumReads: 1800,
+  change: "+5%",
+  changeType: "positive",
+  trend: [36, 38, 40, 41, 42, 43, 43],
+};
+
+export const topArticlesByViews = [
+  { title: "New Office Facilities Open on Floor 4", views: 842 },
+  { title: "Q1 2026 Company Update", views: 710 },
+  { title: "Workplace Safety Reminder — April", views: 524 },
+  { title: "Team Event: Spring Outing Registration", views: 486 },
+  { title: "IT System Maintenance — Mar 29", views: 318 },
+];
+
+// ── Marketplace ───────────────────────────────────────
+
+export interface MarketplaceData {
+  redemptionRate: number;
+  totalUses: number;
+  activeOffers: number;
+  change: string;
+  changeType: "positive" | "negative" | "neutral";
+  trend: number[];
+  topOffers: { name: string; redemptions: number; vendor: string }[];
+}
+
+export const marketplaceData: MarketplaceData = {
+  redemptionRate: 34,
+  totalUses: 1087,
+  activeOffers: 24,
+  change: "+8%",
+  changeType: "positive",
+  trend: [24, 27, 29, 31, 33, 34, 34],
+  topOffers: [
+    { name: "Gym Monthly Pass", vendor: "FitLife", redemptions: 89 },
+    { name: "Lunch Deal — Floor 2 Canteen", vendor: "CaféCo", redemptions: 72 },
+    { name: "Public Transport Top-Up", vendor: "City Transit", redemptions: 61 },
+    { name: "Coffee Subscription", vendor: "BeanBar", redemptions: 54 },
+    { name: "Bike Rental — Weekly", vendor: "GreenRide", redemptions: 38 },
+  ],
+};
+
+// ── Alerts ────────────────────────────────────────────
+
+export interface AlertsData {
+  alertsThisMonth: number;
+  alertsAvg: number;
+  avgResponseTime: string;
+  change: string;
+  changeType: "positive" | "negative" | "neutral";
+  trend: number[];
+  recentAlerts: {
+    title: string;
+    type: "fire" | "security" | "evacuation" | "drill" | "medical";
+    date: string;
+    responseTime: string;
+  }[];
+}
+
+export const alertsData: AlertsData = {
+  alertsThisMonth: 2,
+  alertsAvg: 5,
+  avgResponseTime: "4m 12s",
+  change: "-60%",
+  changeType: "positive",
+  trend: [7, 6, 5, 4, 3, 5, 2],
+  recentAlerts: [
+    { title: "Fire Drill — HQ New York", type: "drill", date: "Mar 12, 2026", responseTime: "3m 48s" },
+    { title: "Unauthorized Access Attempt — Floor 3", type: "security", date: "Mar 4, 2026", responseTime: "4m 36s" },
+    { title: "Medical Emergency — Building B London", type: "medical", date: "Feb 21, 2026", responseTime: "6m 02s" },
+    { title: "Evacuation Drill — Singapore", type: "drill", date: "Feb 14, 2026", responseTime: "4m 15s" },
+    { title: "Security Alert — Parking Level B1", type: "security", date: "Jan 28, 2026", responseTime: "2m 55s" },
+  ],
+};

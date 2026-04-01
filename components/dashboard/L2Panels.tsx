@@ -36,8 +36,35 @@ import {
   presenceByDay,
   digitalCardBreakdown,
   siteComparison,
+  parkingData,
+  parkingOccupancyByHour,
+  parkingOccupancyByDay,
+  agreementsData,
+  contentData,
+  topArticlesByViews,
+  marketplaceData,
+  alertsData,
 } from "@/lib/dashboard-data";
 import { DS, TOOLTIP, AXIS_LABEL, SPLIT_LINE } from "@/lib/chart-theme";
+
+/* ── View in module button ──────────────────────────── */
+
+function ViewInModuleButton({ onClick }: { onClick?: () => void }) {
+  if (!onClick) return null;
+  return (
+    <div className="pt-2 border-t border-border-subtle">
+      <button
+        onClick={onClick}
+        className="flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-[13px] font-medium text-ink-secondary transition-colors hover:bg-surface-subtle hover:text-ink-primary"
+      >
+        View full analytics
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
+}
 
 /* ── Shared sub-components ──────────────────────────── */
 
@@ -149,7 +176,7 @@ export function SiteDetailPanel({ site }: { site: SiteFootprintData }) {
 }
 
 /* ── 1. Occupancy Panel ───────────────────────────────── */
-export function OccupancyPanel() {
+export function OccupancyPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = occupancyData;
 
   const stackBarOption = {
@@ -233,12 +260,13 @@ export function OccupancyPanel() {
         <SectionLabel>Daily occupancy trend</SectionLabel>
         <EChart option={trendOption} style={{ height: 150 }} />
       </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
 
 /* ── 2. Guests Panel ──────────────────────────────────── */
-export function GuestsPanel() {
+export function GuestsPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = guestsData;
   const [showDigitalBreakdown, setShowDigitalBreakdown] = useState(false);
 
@@ -361,12 +389,13 @@ export function GuestsPanel() {
             : "Click \"Expand digital\" to see BLE, Wallet, QR, Biometric breakdown"}
         </p>
       </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
 
 /* ── 3. Bookings Panel ────────────────────────────────── */
-export function BookingsPanel() {
+export function BookingsPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = bookingsData;
   const [bookingTypeFilter, setBookingTypeFilter] = useState<string>("all");
 
@@ -606,12 +635,13 @@ export function BookingsPanel() {
           <MetricRow label="Cancellation rate" value={`${d.cancellationRate}%`} />
         </div>
       </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
 
 /* ── 4. Digital Badge Adoption Panel ──────────────────── */
-export function DigitalBadgeAdoptionPanel() {
+export function DigitalBadgeAdoptionPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = digitalBadgeAdoptionData;
   const [showDigitalExpanded, setShowDigitalExpanded] = useState(false);
 
@@ -783,12 +813,13 @@ export function DigitalBadgeAdoptionPanel() {
         </div>
         <p className="type-caption mt-2 text-ink-muted">App data — digital badge usage correlates with app activity</p>
       </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
 
 /* ── 5. Service Requests Panel ────────────────────────── */
-export function ServiceRequestsPanel() {
+export function ServiceRequestsPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = serviceRequestsData;
 
   const requestsTrendOption = {
@@ -976,23 +1007,11 @@ export function ServiceRequestsPanel() {
 
   return (
     <div className="space-y-6">
-      {/* KPI row */}
-      <div className="grid grid-cols-3 gap-px rounded-xl overflow-hidden border border-border-default">
-        <div className="bg-surface-subtle px-3 py-3 text-center">
-          <p className="type-caption mb-1">Open</p>
-          <p className="type-kpi-sm">{d.openRequests}</p>
-        </div>
-        <div className="bg-surface-subtle px-3 py-3 text-center">
-          <p className="type-caption mb-1">Created</p>
-          <p className="type-kpi-sm">{d.createdInPeriod}</p>
-          <p className="type-caption mt-0.5">{d.prevCreated} prev. · <span className="text-status-success font-semibold">{d.createdChange}</span></p>
-        </div>
-        <div className="bg-surface-subtle px-3 py-3 text-center">
-          <p className="type-caption mb-1">Closed</p>
-          <p className="type-kpi-sm">{d.closedInPeriod}</p>
-          <p className="type-caption mt-0.5">{d.prevClosed} prev. · <span className="text-status-success font-semibold">{d.closedChange}</span></p>
-        </div>
-      </div>
+      <KpiRow items={[
+        { label: "Open", value: d.openRequests },
+        { label: "Created", value: d.createdInPeriod },
+        { label: "Closed", value: d.closedInPeriod },
+      ]} />
 
       <div>
         <SectionLabel>Who creates requests?</SectionLabel>
@@ -1047,12 +1066,13 @@ export function ServiceRequestsPanel() {
           </table>
         </div>
       </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
 
 /* ── 6. People & Access State ─────────────────────────── */
-export function PeopleAccessStatePanel() {
+export function PeopleAccessStatePanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
   const d = peopleIdentityData;
 
   const donutOption = {
@@ -1123,6 +1143,7 @@ export function PeopleAccessStatePanel() {
           </p>
         </div>
       )}
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }
@@ -1191,6 +1212,334 @@ export function WorkplaceUsagePanel() {
         <SectionLabel>7-day access trend</SectionLabel>
         <EChart option={barOption} style={{ height: 140 }} />
       </div>
+    </div>
+  );
+}
+
+/* ── Parking ────────────────────────────────────────── */
+
+export function ParkingPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
+  const d = parkingData;
+
+  const areaOption = {
+    tooltip: TOOLTIP,
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: "category" as const,
+      data: parkingOccupancyByHour.labels.map((h) => `${h}h`),
+      axisLabel: AXIS_LABEL,
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: "value" as const,
+      max: 100,
+      axisLabel: { ...AXIS_LABEL, formatter: (v: number) => `${v}%` },
+      splitLine: SPLIT_LINE,
+    },
+    series: [
+      {
+        type: "line",
+        data: parkingOccupancyByHour.values,
+        smooth: true,
+        areaStyle: { color: DS.signature + "22" },
+        lineStyle: { color: DS.signature, width: 2 },
+        itemStyle: { color: DS.signature },
+        symbol: "none",
+      },
+    ],
+  };
+
+  const barOption = {
+    tooltip: TOOLTIP,
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: "category" as const,
+      data: parkingOccupancyByDay.labels,
+      axisLabel: AXIS_LABEL,
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: "value" as const,
+      max: 100,
+      axisLabel: { ...AXIS_LABEL, formatter: (v: number) => `${v}%` },
+      splitLine: SPLIT_LINE,
+    },
+    series: [
+      {
+        type: "bar",
+        data: parkingOccupancyByDay.values,
+        itemStyle: { color: DS.signature, borderRadius: [3, 3, 0, 0] },
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-6">
+      <KpiRow items={[
+        { label: "Avg Occupancy", value: `${d.avgOccupancy}%`, accent: true },
+        { label: "Peak Occupancy", value: `${d.peakOccupancy}%` },
+        { label: "Blocklist Hits", value: d.blocklistHits },
+      ]} />
+
+      <div>
+        <SectionLabel>Occupancy by hour (today)</SectionLabel>
+        <EChart option={areaOption} style={{ height: 160 }} />
+      </div>
+
+      <div>
+        <SectionLabel>Occupancy by day (this week)</SectionLabel>
+        <EChart option={barOption} style={{ height: 140 }} />
+      </div>
+
+      <div>
+        <SectionLabel>Spot summary</SectionLabel>
+        <ProgressBar value={d.occupiedSpots} max={d.totalSpots} variant="brand" size="md" />
+        <p className="type-caption mt-1.5">{d.occupiedSpots} occupied of {d.totalSpots} total spots</p>
+      </div>
+      <ViewInModuleButton onClick={onViewInModule} />
+    </div>
+  );
+}
+
+/* ── Agreements ─────────────────────────────────────── */
+
+export function AgreementsPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
+  const d = agreementsData;
+
+  return (
+    <div className="space-y-6">
+      <KpiRow items={[
+        { label: "Signature Rate", value: `${d.signatureRate}%`, accent: true },
+        { label: "Signed", value: d.signed.toLocaleString() },
+        { label: "Unsigned", value: d.unsigned },
+      ]} />
+
+      <div>
+        <SectionLabel>Overall completion</SectionLabel>
+        <ProgressBar value={d.signed} max={d.totalRequired} variant="brand" size="md" />
+        <p className="type-caption mt-1.5">{d.signed.toLocaleString()} of {d.totalRequired.toLocaleString()} required signatures collected</p>
+      </div>
+
+      <div>
+        <SectionLabel>Unsigned mandatory agreements</SectionLabel>
+        <div className="space-y-px rounded-xl overflow-hidden border border-border-default">
+          {d.unsignedList.map((item) => (
+            <div key={item.name} className="flex items-center justify-between bg-surface-subtle px-3 py-2.5 gap-3">
+              <div className="min-w-0">
+                <p className="type-label truncate">{item.name}</p>
+                <p className="type-caption">Due: {item.dueDate}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant={item.type === "Mandatory" ? "warning" : "neutral"}>{item.type}</Badge>
+                <span className="type-label text-status-error font-semibold">{item.count}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <ViewInModuleButton onClick={onViewInModule} />
+    </div>
+  );
+}
+
+/* ── Content & Engagement ───────────────────────────── */
+
+export function ContentPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
+  const d = contentData;
+
+  const barOption = {
+    tooltip: TOOLTIP,
+    grid: { top: 8, right: 8, bottom: 4, left: 8, containLabel: true },
+    xAxis: { type: "value" as const, axisLabel: AXIS_LABEL, splitLine: SPLIT_LINE },
+    yAxis: {
+      type: "category" as const,
+      data: [...topArticlesByViews].reverse().map((a) => a.title),
+      axisLabel: { ...AXIS_LABEL, width: 160, overflow: "truncate" as const },
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    series: [
+      {
+        type: "bar",
+        data: [...topArticlesByViews].reverse().map((a) => a.views),
+        itemStyle: { color: DS.signature, borderRadius: [0, 3, 3, 0] },
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-6">
+      <KpiRow items={[
+        { label: "Engagement Rate", value: `${d.engagementRate}%`, accent: true },
+        { label: "News Views", value: d.newsViews.toLocaleString() },
+        { label: "Poll Participation", value: `${d.pollParticipation}%` },
+      ]} />
+
+      <div>
+        <SectionLabel>Top articles by views</SectionLabel>
+        <EChart option={barOption} style={{ height: 200 }} />
+      </div>
+
+      <div>
+        <SectionLabel>Activity breakdown</SectionLabel>
+        <div className="grid grid-cols-2 gap-px rounded-xl overflow-hidden border border-border-default">
+          <div className="bg-surface-subtle px-3 py-3 text-center">
+            <p className="type-caption mb-1">Forum reads</p>
+            <p className="type-kpi-sm">{d.forumReads.toLocaleString()}</p>
+          </div>
+          <div className="bg-surface-subtle px-3 py-3 text-center">
+            <p className="type-caption mb-1">Poll participation</p>
+            <p className="type-kpi-sm text-signature">{d.pollParticipation}%</p>
+          </div>
+        </div>
+      </div>
+      <ViewInModuleButton onClick={onViewInModule} />
+    </div>
+  );
+}
+
+/* ── Marketplace ────────────────────────────────────── */
+
+export function MarketplacePanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
+  const d = marketplaceData;
+
+  const barOption = {
+    tooltip: TOOLTIP,
+    grid: { top: 8, right: 8, bottom: 4, left: 8, containLabel: true },
+    xAxis: { type: "value" as const, axisLabel: AXIS_LABEL, splitLine: SPLIT_LINE },
+    yAxis: {
+      type: "category" as const,
+      data: [...d.topOffers].reverse().map((o) => o.name),
+      axisLabel: { ...AXIS_LABEL, width: 160, overflow: "truncate" as const },
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    series: [
+      {
+        type: "bar",
+        data: [...d.topOffers].reverse().map((o) => o.redemptions),
+        itemStyle: { color: DS.signature, borderRadius: [0, 3, 3, 0] },
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-6">
+      <KpiRow items={[
+        { label: "Redemption Rate", value: `${d.redemptionRate}%`, accent: true },
+        { label: "Total Uses", value: d.totalUses.toLocaleString() },
+        { label: "Active Offers", value: d.activeOffers },
+      ]} />
+
+      <div>
+        <SectionLabel>Top offers by redemptions</SectionLabel>
+        <EChart option={barOption} style={{ height: 200 }} />
+      </div>
+
+      <div>
+        <SectionLabel>Offer list</SectionLabel>
+        <div className="space-y-px rounded-xl overflow-hidden border border-border-default">
+          {d.topOffers.map((offer, i) => (
+            <div key={offer.name} className="flex items-center justify-between bg-surface-subtle px-3 py-2.5 gap-3">
+              <div className="min-w-0">
+                <p className="type-label truncate">{offer.name}</p>
+                <p className="type-caption">{offer.vendor}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant={i === 0 ? "success" : "neutral"}>{offer.redemptions}×</Badge>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <ViewInModuleButton onClick={onViewInModule} />
+    </div>
+  );
+}
+
+/* ── Alerts ─────────────────────────────────────────── */
+
+const ALERT_TYPE_LABELS: Record<string, string> = {
+  fire: "Fire",
+  security: "Security",
+  evacuation: "Evacuation",
+  drill: "Drill",
+  medical: "Medical",
+};
+
+const ALERT_TYPE_VARIANTS: Record<string, "error" | "warning" | "info" | "neutral"> = {
+  fire: "error",
+  security: "warning",
+  evacuation: "warning",
+  drill: "neutral",
+  medical: "error",
+};
+
+export function AlertsPanel({ onViewInModule }: { onViewInModule?: () => void } = {}) {
+  const d = alertsData;
+
+  const lineOption = {
+    tooltip: TOOLTIP,
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: "category" as const,
+      data: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
+      axisLabel: AXIS_LABEL,
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: "value" as const,
+      minInterval: 1,
+      axisLabel: AXIS_LABEL,
+      splitLine: SPLIT_LINE,
+    },
+    series: [
+      {
+        type: "line",
+        data: d.trend,
+        smooth: true,
+        lineStyle: { color: DS.signature, width: 2 },
+        itemStyle: { color: DS.signature },
+        symbol: "circle",
+        symbolSize: 5,
+        areaStyle: { color: DS.signature + "22" },
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-6">
+      <KpiRow items={[
+        { label: "This Month", value: d.alertsThisMonth, accent: true },
+        { label: "Monthly Avg", value: d.alertsAvg },
+        { label: "Avg Response", value: d.avgResponseTime },
+      ]} />
+
+      <div>
+        <SectionLabel>Alert trend (last 9 months)</SectionLabel>
+        <EChart option={lineOption} style={{ height: 150 }} />
+      </div>
+
+      <div>
+        <SectionLabel>Recent alerts</SectionLabel>
+        <div className="space-y-px rounded-xl overflow-hidden border border-border-default">
+          {d.recentAlerts.map((alert) => (
+            <div key={alert.title} className="flex items-center justify-between bg-surface-subtle px-3 py-2.5 gap-3">
+              <div className="min-w-0">
+                <p className="type-label truncate">{alert.title}</p>
+                <p className="type-caption">{alert.date} · Response: {alert.responseTime}</p>
+              </div>
+              <Badge variant={ALERT_TYPE_VARIANTS[alert.type]}>
+                {ALERT_TYPE_LABELS[alert.type]}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </div>
+      <ViewInModuleButton onClick={onViewInModule} />
     </div>
   );
 }

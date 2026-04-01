@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Drawer } from "@/components/overlays/Drawer";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
@@ -12,6 +13,7 @@ import {
   timeOptions,
   getDashboardKPIs,
   getFilteredSites,
+  sitesFootprint,
 } from "@/lib/dashboard-data";
 import { useSiteContext } from "@/lib/site-context";
 import {
@@ -22,8 +24,14 @@ import {
   DigitalBadgeAdoptionPanel,
   ServiceRequestsPanel,
   PeopleAccessStatePanel,
+  ParkingPanel,
+  AgreementsPanel,
+  ContentPanel,
+  MarketplacePanel,
+  AlertsPanel,
 } from "@/components/dashboard/L2Panels";
 import { SitesAccessStatusWidget } from "@/components/dashboard/SitesAccessStatusWidget";
+import { KPIGrid } from "@/components/dashboard/KPIGrid";
 import { type SiteFootprintData } from "@/lib/dashboard-data";
 import {
   Activity,
@@ -33,7 +41,19 @@ import {
   Smartphone,
   ShieldCheck,
   ClipboardList,
+  ParkingCircle,
+  FileCheck,
+  Newspaper,
+  ShoppingBag,
+  Bell,
 } from "lucide-react";
+import {
+  parkingData,
+  agreementsData,
+  contentData,
+  marketplaceData,
+  alertsData,
+} from "@/lib/dashboard-data";
 
 /* ── Types ──────────────────────────────────────────── */
 type PanelId =
@@ -45,6 +65,11 @@ type PanelId =
   | "digital-badge"
   | "service-requests"
   | "people"
+  | "parking"
+  | "agreements"
+  | "content"
+  | "marketplace"
+  | "alerts"
   | null;
 
 /* ── L1 Card ─────────────────────────────────────────
@@ -182,16 +207,39 @@ const panelMeta: Record<NonNullable<PanelId>, { title: string; description: stri
     title: "People & Access State",
     description: "Access readiness of users — healthy, onboarding, and attention required",
   },
+  parking: {
+    title: "Parking",
+    description: "Parking spot occupancy, peak-hour trends, and blocklist hits",
+  },
+  agreements: {
+    title: "Agreements",
+    description: "Signature completion rate and outstanding mandatory documents",
+  },
+  content: {
+    title: "Content & Engagement",
+    description: "Employee engagement across news, polls, and forum activity",
+  },
+  marketplace: {
+    title: "Marketplace",
+    description: "Offer redemptions and top-performing employee benefits",
+  },
+  alerts: {
+    title: "Alerts",
+    description: "Safety and security alerts — count, response times, and recent incidents",
+  },
 };
 
 /* ── Main Page ──────────────────────────────────────── */
 export default function DashboardPage() {
+  const router = useRouter();
   const [activePanel, setActivePanel] = useState<PanelId>(null);
   const [drillSite, setDrillSite] = useState<SiteFootprintData | null>(null);
-  const [zone, setZone] = useState("all");
-  const [time, setTime] = useState("day");
+  const { selectedSite, setSelectedSite, timeRange, setTimeRange, zone, setZone } = useSiteContext();
 
-  const { selectedSite } = useSiteContext();
+  const siteFilterOptions = [
+    { label: "All sites", value: "__all__" },
+    ...sitesFootprint.map((s) => ({ label: s.name, value: s.name })),
+  ];
 
   // Reactive KPIs — recalculate whenever sidebar site changes
   const kpis = getDashboardKPIs(selectedSite);
@@ -208,6 +256,12 @@ export default function DashboardPage() {
   const toggle = (id: NonNullable<PanelId>) =>
     setActivePanel((p) => (p === id ? null : id));
 
+  /** Close the drawer and navigate to a module page */
+  const viewInModule = (href: string) => {
+    closePanel();
+    router.push(href);
+  };
+
   function handleSiteSelect(site: SiteFootprintData) {
     setDrillSite(site);
     setActivePanel("site-detail");
@@ -217,17 +271,24 @@ export default function DashboardPage() {
     (occupancyData.totalPresent / occupancyData.totalCapacity) * 100
   );
 
+  const siteLabel = selectedSite ? `at ${selectedSite.split(" — ")[1] ?? selectedSite}` : "across all sites";
+
   /* ── L2 panel renderer ─────────────────────────── */
   function renderPanel(id: NonNullable<PanelId>) {
     switch (id) {
       case "site-detail":       return drillSite ? <SiteDetailPanel site={drillSite} /> : null;
-      case "occupancy":         return <OccupancyPanel />;
-      case "guests":            return <GuestsPanel />;
+      case "occupancy":         return <OccupancyPanel onViewInModule={() => viewInModule("/operations/access")} />;
+      case "guests":            return <GuestsPanel onViewInModule={() => viewInModule("/operations/guestbook")} />;
       case "access":            return <></>;
-      case "bookings":          return <BookingsPanel />;
-      case "digital-badge":     return <DigitalBadgeAdoptionPanel />;
-      case "service-requests":  return <ServiceRequestsPanel />;
-      case "people":            return <PeopleAccessStatePanel />;
+      case "bookings":          return <BookingsPanel onViewInModule={() => viewInModule("/amenities/bookings")} />;
+      case "digital-badge":     return <DigitalBadgeAdoptionPanel onViewInModule={() => viewInModule("/people")} />;
+      case "service-requests":  return <ServiceRequestsPanel onViewInModule={() => viewInModule("/operations/service-requests")} />;
+      case "people":            return <PeopleAccessStatePanel onViewInModule={() => viewInModule("/people")} />;
+      case "parking":           return <ParkingPanel onViewInModule={() => viewInModule("/operations/parking")} />;
+      case "agreements":        return <AgreementsPanel onViewInModule={() => viewInModule("/people")} />;
+      case "content":           return <ContentPanel onViewInModule={() => viewInModule("/content/news")} />;
+      case "marketplace":       return <MarketplacePanel onViewInModule={() => viewInModule("/content/marketplace")} />;
+      case "alerts":            return <AlertsPanel onViewInModule={() => viewInModule("/operations/access")} />;
     }
   }
 
@@ -247,8 +308,8 @@ export default function DashboardPage() {
             <Select
               label=""
               options={timeOptions}
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
             />
           </div>
         </div>
@@ -263,14 +324,14 @@ export default function DashboardPage() {
         {/* ── Zone 2: Workplace ────────────────────────── */}
         <div>
           <p className="type-subheading mb-3">Workplace</p>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <KPIGrid>
 
             {/* Occupancy */}
             <L1Card
               icon={<UserCheck size={14} />}
               title="Occupancy"
               value={`${occupancyData.totalPresent} / ${occupancyData.totalCapacity}`}
-              context={`${occupancyPct}% of capacity (employees)`}
+              context={`${occupancyPct}% of capacity ${siteLabel}`}
               change={occupancyData.change}
               changeType={occupancyData.changeType}
               trend={occupancyData.trend}
@@ -286,12 +347,13 @@ export default function DashboardPage() {
               }
             />
 
+
             {/* Guests */}
             <L1Card
               icon={<Users size={14} />}
               title="Guests"
               value={guestsData.totalGuests}
-              context="active visits across all sites"
+              context={`active visits ${siteLabel}`}
               change={guestsData.change}
               changeType={guestsData.changeType}
               trend={guestsData.trend}
@@ -309,7 +371,7 @@ export default function DashboardPage() {
               icon={<CalendarCheck size={14} />}
               title="Bookings"
               value={bookingsData.totalBookings.toLocaleString()}
-              context="reservations across all types"
+              context={`reservations ${siteLabel}`}
               change={bookingsData.change}
               changeType={bookingsData.changeType}
               trend={bookingsData.trend}
@@ -321,20 +383,41 @@ export default function DashboardPage() {
                 </p>
               }
             />
-          </div>
+
+            {/* Parking */}
+            <L1Card
+              icon={<ParkingCircle size={14} />}
+              title="Parking"
+              value={`${parkingData.avgOccupancy}%`}
+              context={`avg occupancy · ${parkingData.occupiedSpots} / ${parkingData.totalSpots} spots`}
+              change={parkingData.change}
+              changeType={parkingData.changeType}
+              trend={parkingData.trend}
+              active={activePanel === "parking"}
+              onClick={() => toggle("parking")}
+              extra={
+                <ProgressBar
+                  value={parkingData.occupiedSpots}
+                  max={parkingData.totalSpots}
+                  variant="brand"
+                  size="sm"
+                />
+              }
+            />
+          </KPIGrid>
         </div>
 
         {/* ── Zone 3: Digital & Operations ──────────────── */}
         <div>
           <p className="type-subheading mb-3">Digital & Operations</p>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <KPIGrid>
 
             {/* Digital Badge Adoption */}
             <L1Card
               icon={<Smartphone size={14} />}
               title="Digital Badge Adoption"
               value={`${digitalBadgeAdoptionData.adoptionRate}%`}
-              context="employees using digital access"
+              context={`employees using digital access ${siteLabel}`}
               change={digitalBadgeAdoptionData.change}
               changeType={digitalBadgeAdoptionData.changeType}
               trend={digitalBadgeAdoptionData.trend}
@@ -360,7 +443,7 @@ export default function DashboardPage() {
               icon={<ClipboardList size={14} />}
               title="Service Requests"
               value={serviceRequestsData.openRequests}
-              context="open requests"
+              context={`open requests ${siteLabel}`}
               change={serviceRequestsData.change}
               changeType={serviceRequestsData.changeType}
               trend={serviceRequestsData.trend}
@@ -388,7 +471,7 @@ export default function DashboardPage() {
               }
               title="People & Access State"
               value={peopleIdentityData.totalPeople.toLocaleString()}
-              context="access readiness of people"
+              context={`access readiness ${siteLabel}`}
               change={peopleIdentityData.change}
               changeType={peopleIdentityData.changeType}
               active={activePanel === "people"}
@@ -399,7 +482,94 @@ export default function DashboardPage() {
                 </p>
               }
             />
-          </div>
+
+            {/* Agreements */}
+            <L1Card
+              icon={<FileCheck size={14} />}
+              title="Agreements"
+              value={`${agreementsData.signatureRate}%`}
+              context={`signed · ${agreementsData.signed.toLocaleString()} of ${agreementsData.totalRequired.toLocaleString()}`}
+              change={agreementsData.change}
+              changeType={agreementsData.changeType}
+              trend={agreementsData.trend}
+              badge={
+                agreementsData.unsigned > 0 ? (
+                  <Badge variant="warning">{agreementsData.unsigned} unsigned</Badge>
+                ) : undefined
+              }
+              active={activePanel === "agreements"}
+              onClick={() => toggle("agreements")}
+              extra={
+                <ProgressBar
+                  value={agreementsData.signed}
+                  max={agreementsData.totalRequired}
+                  variant="brand"
+                  size="sm"
+                />
+              }
+            />
+          </KPIGrid>
+        </div>
+
+        {/* ── Zone 4: Engagement ───────────────────────── */}
+        <div>
+          <p className="type-subheading mb-3">Engagement</p>
+          <KPIGrid>
+
+            {/* Content */}
+            <L1Card
+              icon={<Newspaper size={14} />}
+              title="Content & Engagement"
+              value={`${contentData.engagementRate}%`}
+              context={`engagement rate · ${contentData.newsViews.toLocaleString()} news views`}
+              change={contentData.change}
+              changeType={contentData.changeType}
+              trend={contentData.trend}
+              active={activePanel === "content"}
+              onClick={() => toggle("content")}
+              extra={
+                <p className="type-caption">
+                  Poll participation: {contentData.pollParticipation}% · Forum reads: {contentData.forumReads.toLocaleString()}
+                </p>
+              }
+            />
+
+            {/* Marketplace */}
+            <L1Card
+              icon={<ShoppingBag size={14} />}
+              title="Marketplace"
+              value={`${marketplaceData.redemptionRate}%`}
+              context={`redemption rate · ${marketplaceData.totalUses.toLocaleString()} uses`}
+              change={marketplaceData.change}
+              changeType={marketplaceData.changeType}
+              trend={marketplaceData.trend}
+              active={activePanel === "marketplace"}
+              onClick={() => toggle("marketplace")}
+              extra={
+                <p className="type-caption">
+                  {marketplaceData.activeOffers} active offers · Top: {marketplaceData.topOffers[0]?.name}
+                </p>
+              }
+            />
+
+            {/* Alerts */}
+            <L1Card
+              icon={<Bell size={14} />}
+              title="Alerts"
+              value={alertsData.alertsThisMonth}
+              context={`alerts this month · avg ${alertsData.alertsAvg} / month`}
+              change={alertsData.change}
+              changeType={alertsData.changeType}
+              trend={alertsData.trend}
+              active={activePanel === "alerts"}
+              onClick={() => toggle("alerts")}
+              extra={
+                <p className="type-caption">
+                  Avg response: {alertsData.avgResponseTime} · Last: {alertsData.recentAlerts[0]?.title}
+                </p>
+              }
+            />
+          </KPIGrid>
         </div>
 
       </div>
@@ -410,13 +580,22 @@ export default function DashboardPage() {
           open={!!activePanel}
           onClose={closePanel}
           title={panelMeta[activePanel].title}
-          width="w-[440px] max-w-[90vw]"
           mobileSheet
         >
           {/* Filter bar — hidden for site detail */}
           <div className="-mx-4 -mt-4">
             {activePanel !== "site-detail" && (
               <div className="flex gap-3 px-4 py-3 border-b border-border-default">
+                <div className="flex-1">
+                  <Select
+                    label="Site"
+                    options={siteFilterOptions}
+                    value={selectedSite ?? "__all__"}
+                    onChange={(e) =>
+                      setSelectedSite(e.target.value === "__all__" ? undefined : e.target.value)
+                    }
+                  />
+                </div>
                 <div className="flex-1">
                   <Select
                     label="Zone"
@@ -429,8 +608,8 @@ export default function DashboardPage() {
                   <Select
                     label="Time"
                     options={timeOptions}
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    value={timeRange}
+                    onChange={(e) => setTimeRange(e.target.value)}
                   />
                 </div>
               </div>

@@ -35,7 +35,7 @@ export function Drawer({
   title,
   children,
   direction = "right",
-  width = "w-[400px] max-w-[90vw]",
+  width = "w-[80vw] max-w-[1100px]",
   mobileSheet = false,
   className,
 }: DrawerProps) {
@@ -100,7 +100,7 @@ export function Drawer({
                 "bottom-0 left-0 right-0 max-h-[85vh] rounded-t-2xl border-t",
                 // Desktop: right panel
                 "md:top-0 md:bottom-0 md:right-0 md:left-auto md:max-h-none md:rounded-none md:border-t-0 md:border-l",
-                `md:${width.split(" ")[0]}`,
+                ...width.split(" ").map((cls) => `md:${cls}`),
               ]
             : [
                 "top-0 bottom-0",

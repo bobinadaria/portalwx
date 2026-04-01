@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, LayoutDashboard, Users, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import gsap from "gsap";
+import {
+  NAV_ENTRIES,
+  isPathActive,
+  groupContainsActive,
+  type NavGroup,
+} from "./nav-config";
 
 interface MobileNavProps {
   activePath?: string;
@@ -15,11 +21,6 @@ interface MobileNavProps {
   onSiteChange?: (site: string | undefined) => void;
   navBadges?: Record<string, number>;
 }
-
-const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "People", href: "/people", icon: Users },
-];
 
 export function MobileNav({
   activePath,
@@ -35,6 +36,38 @@ export function MobileNav({
   const drawerRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
+  // Auto-expand groups containing activePath
+  const getInitialExpanded = () =>
+    new Set<string>(
+      NAV_ENTRIES.filter(
+        (e): e is NavGroup =>
+          e.type === "group" && groupContainsActive(e, activePath)
+      ).map((e) => e.label)
+    );
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
+    getInitialExpanded
+  );
+
+  useEffect(() => {
+    NAV_ENTRIES.forEach((e) => {
+      if (e.type === "group" && groupContainsActive(e, activePath)) {
+        setExpandedGroups((prev) => {
+          if (prev.has(e.label)) return prev;
+          return new Set([...prev, e.label]);
+        });
+      }
+    });
+  }, [activePath]);
+
+  const toggleGroup = (label: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (!drawerRef.current || !backdropRef.current) return;
     if (open) {
@@ -42,9 +75,17 @@ export function MobileNav({
       gsap.fromTo(backdropRef.current, { opacity: 0, pointerEvents: "auto" }, { opacity: 1, duration: 0.2 });
     } else {
       gsap.to(drawerRef.current, { x: "-100%", duration: 0.2, ease: "power2.in" });
-      gsap.to(backdropRef.current, { opacity: 0, duration: 0.15, onComplete: () => { if (backdropRef.current) backdropRef.current.style.pointerEvents = "none"; } });
+      gsap.to(backdropRef.current, {
+        opacity: 0,
+        duration: 0.15,
+        onComplete: () => {
+          if (backdropRef.current) backdropRef.current.style.pointerEvents = "none";
+        },
+      });
     }
   }, [open]);
+
+  const handleLinkClick = () => setOpen(false);
 
   return (
     <>
@@ -82,7 +123,7 @@ export function MobileNav({
         aria-label="Navigation"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-0">
+        <div className="flex items-center justify-between px-5 pt-5 pb-0 shrink-0">
           <span className="text-[15px] font-semibold text-ink-primary">Portal WX</span>
           <button
             onClick={() => setOpen(false)}
@@ -95,22 +136,29 @@ export function MobileNav({
 
         {/* Site selector */}
         {sites && sites.length > 0 && (
-          <div className="px-5 pt-5">
+          <div className="px-5 pt-4 shrink-0">
             <div className="relative">
               <button
                 onClick={() => setSiteOpen(!siteOpen)}
                 className={cn(
-                  "flex h-10 w-full items-center justify-between rounded-lg border border-border-default bg-surface-raised px-3 text-[13px] text-ink-primary transition-colors",
+                  "flex h-9 w-full items-center justify-between rounded-lg border border-border-default bg-surface-raised px-3 text-[13px] text-ink-primary transition-colors",
                   "hover:border-border-strong"
                 )}
               >
                 <span className="truncate">
                   {selectedSite ?? `All your sites (${sites.length})`}
                 </span>
-                <ChevronDown
-                  size={16}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                   className={cn("shrink-0 text-ink-muted transition-transform", siteOpen && "rotate-180")}
-                />
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
               </button>
 
               {siteOpen && (
@@ -143,32 +191,90 @@ export function MobileNav({
         )}
 
         {/* Nav items */}
-        <nav className="flex-1 px-3 pt-4">
-          <ul className="flex flex-col gap-[5px]">
-            {navItems.map((item) => {
-              const isActive = activePath === item.href;
-              const Icon = item.icon;
+        <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-2 min-h-0">
+          <ul className="flex flex-col gap-[2px]">
+            {NAV_ENTRIES.map((entry) => {
+              if (entry.type === "leaf") {
+                const active = isPathActive(entry.href, activePath);
+                const Icon = entry.icon;
+                const badge = navBadges?.[entry.href];
+                return (
+                  <li key={entry.href}>
+                    <Link
+                      href={entry.href}
+                      onClick={handleLinkClick}
+                      className={cn(
+                        "flex h-10 items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors",
+                        active
+                          ? "bg-brand-l2 text-signature"
+                          : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
+                      )}
+                    >
+                      <Icon size={16} className="shrink-0" />
+                      <span className="flex-1 truncate">{entry.label}</span>
+                      {badge != null && (
+                        <span className="type-caption text-ink-muted tabular-nums">
+                          {badge.toLocaleString()}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              }
+
+              // Group
+              const isExpanded = expandedGroups.has(entry.label);
+              const hasActiveChild = groupContainsActive(entry, activePath);
+              const Icon = entry.icon;
+
               return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
+                <li key={entry.label}>
+                  <button
+                    onClick={() => toggleGroup(entry.label)}
                     className={cn(
-                      "flex h-12 items-center gap-3 rounded-lg px-4 text-sm font-medium transition-colors",
-                      "focus-visible:ring-2 focus-visible:ring-signature focus-visible:ring-offset-1",
-                      isActive
-                        ? "bg-brand-l2 text-signature"
-                        : "text-ink-primary hover:bg-surface-subtle"
+                      "flex h-10 w-full items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors",
+                      hasActiveChild && !isExpanded
+                        ? "text-signature hover:bg-surface-subtle"
+                        : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
                     )}
                   >
-                    <Icon size={20} className="shrink-0" />
-                    <span className="flex-1 truncate">{item.label}</span>
-                    {navBadges?.[item.href] != null && (
-                      <span className="type-caption text-ink-muted tabular-nums">
-                        {navBadges[item.href].toLocaleString()}
-                      </span>
+                    <Icon size={16} className="shrink-0" />
+                    <span className="flex-1 truncate text-left">{entry.label}</span>
+                    {entry.notificationDot && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
                     )}
-                  </Link>
+                    <ChevronRight
+                      size={14}
+                      className={cn(
+                        "shrink-0 text-ink-muted transition-transform duration-150",
+                        isExpanded && "rotate-90"
+                      )}
+                    />
+                  </button>
+
+                  {isExpanded && (
+                    <ul className="mt-0.5 flex flex-col gap-[1px]">
+                      {entry.children.map((child) => {
+                        const childActive = isPathActive(child.href, activePath);
+                        return (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              onClick={handleLinkClick}
+                              className={cn(
+                                "flex h-9 items-center rounded-lg pl-9 pr-3 text-[13px] transition-colors",
+                                childActive
+                                  ? "bg-brand-l2 text-signature font-medium"
+                                  : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
+                              )}
+                            >
+                              <span className="truncate">{child.label}</span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </li>
               );
             })}
@@ -176,10 +282,10 @@ export function MobileNav({
         </nav>
 
         {/* User profile */}
-        <div className="mt-auto">
+        <div className="mt-auto shrink-0">
           <div className="mx-5 h-px bg-border-default" />
-          <div className="flex items-center gap-2.5 px-5 py-4">
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-l1 text-xs font-semibold text-ink-inverse">
+          <div className="flex items-center gap-2.5 px-5 py-3">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-l1 text-xs font-semibold text-ink-inverse">
               {userName.charAt(0).toUpperCase()}
             </span>
             <div className="min-w-0">
