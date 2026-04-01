@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { AppStoreBadge } from "@/components/ui/AppStoreBadge";
 import {
   Smartphone, Users2, LayoutGrid, UtensilsCrossed,
   CalendarCheck, MapPin, Wrench, Users, Building2,
@@ -30,15 +29,15 @@ const features = [
 /* ── Logo ─────────────────────────────────────────────────────────────── */
 function YourBuildingLogo() {
   return (
-    <div className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-2.5 shadow-sm">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="7" fill={G.brand} />
-        <path d="M8 11 L16 17 L24 11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        <path d="M8 17 L16 23 L24 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </svg>
-      <span className="text-[13px] font-semibold leading-tight" style={{ color: G.text }}>
-        your<br />building
-      </span>
+    <div className="bg-white rounded-xl px-3 py-2 shadow-sm">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="https://www.figma.com/api/mcp/asset/672f988d-95e1-4a54-b58d-039a23bdbef5"
+        alt="your building"
+        width={144}
+        height={40}
+        style={{ display: "block", objectFit: "contain" }}
+      />
     </div>
   );
 }
@@ -303,39 +302,15 @@ function RestaurantsScreen() {
 /* ── QR Code ──────────────────────────────────────────────────────────── */
 function QRCodeBlock() {
   return (
-    <div className="bg-white rounded-2xl p-3 shadow-lg inline-flex">
-      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
-        <rect x="4" y="4" width="30" height="30" rx="3" fill="#1B2232" />
-        <rect x="8" y="8" width="22" height="22" rx="2" fill="white" />
-        <rect x="12" y="12" width="14" height="14" rx="1" fill="#1B2232" />
-        <rect x="66" y="4" width="30" height="30" rx="3" fill="#1B2232" />
-        <rect x="70" y="8" width="22" height="22" rx="2" fill="white" />
-        <rect x="74" y="12" width="14" height="14" rx="1" fill="#1B2232" />
-        <rect x="4" y="66" width="30" height="30" rx="3" fill="#1B2232" />
-        <rect x="8" y="70" width="22" height="22" rx="2" fill="white" />
-        <rect x="12" y="74" width="14" height="14" rx="1" fill="#1B2232" />
-        {Array.from({ length: 12 }).map((_, col) =>
-          Array.from({ length: 5 }).map((_, row) =>
-            ((col * 7 + row * 13 + col * row) % 17 > 7)
-              ? <rect key={`a${col}-${row}`} x={42 + col * 5} y={4 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null
-          )
-        )}
-        {Array.from({ length: 5 }).map((_, col) =>
-          Array.from({ length: 12 }).map((_, row) =>
-            ((col * 11 + row * 5 + col + row) % 13 > 5)
-              ? <rect key={`b${col}-${row}`} x={4 + col * 5} y={42 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null
-          )
-        )}
-        {Array.from({ length: 12 }).map((_, col) =>
-          Array.from({ length: 12 }).map((_, row) =>
-            ((col * 3 + row * 17 + (col ^ row)) % 19 > 9)
-              ? <rect key={`c${col}-${row}`} x={42 + col * 5} y={42 + row * 5} width="4" height="4" rx="0.5" fill="#1B2232" />
-              : null
-          )
-        )}
-      </svg>
+    <div className="bg-white rounded-2xl p-3 shadow-lg inline-flex shrink-0">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="https://www.figma.com/api/mcp/asset/240229b6-5423-4fd4-9c17-a7c731917226"
+        alt="Download QR code"
+        width={120}
+        height={120}
+        style={{ display: "block", borderRadius: 6 }}
+      />
     </div>
   );
 }
@@ -462,8 +437,14 @@ export default function WebLandingPage() {
                   Scan the QR code<br />to download the app for free
                 </p>
                 <div className="flex flex-col gap-2.5">
-                  <AppStoreBadge store="apple"  href="#" size="sm" />
-                  <AppStoreBadge store="google" href="#" size="sm" />
+                  <a href="#">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://www.figma.com/api/mcp/asset/306f7ec4-4709-4a5c-9d83-4075e19beef8" alt="Download on the App Store" height={40} style={{ height: 40, width: "auto", display: "block" }} />
+                  </a>
+                  <a href="#">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://www.figma.com/api/mcp/asset/caf1dff0-b2e6-4e39-ad62-753ad0084785" alt="Get it on Google Play" height={40} style={{ height: 40, width: "auto", display: "block" }} />
+                  </a>
                 </div>
               </div>
             </div>
@@ -555,9 +536,15 @@ export default function WebLandingPage() {
 
               <p className="text-[#6b7280] text-sm mb-6">... and many more!</p>
 
-              <div className="flex gap-3 flex-wrap">
-                <AppStoreBadge store="apple"  href="#" size="md" />
-                <AppStoreBadge store="google" href="#" size="md" />
+              <div className="flex gap-3 flex-wrap items-center">
+                <a href="#">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://www.figma.com/api/mcp/asset/306f7ec4-4709-4a5c-9d83-4075e19beef8" alt="Download on the App Store" height={48} style={{ height: 48, width: "auto", display: "block" }} />
+                </a>
+                <a href="#">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://www.figma.com/api/mcp/asset/caf1dff0-b2e6-4e39-ad62-753ad0084785" alt="Get it on Google Play" height={48} style={{ height: 48, width: "auto", display: "block" }} />
+                </a>
               </div>
             </div>
           </div>
