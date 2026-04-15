@@ -237,9 +237,6 @@ export function MobileNav({
                     >
                       <Icon size={16} className="shrink-0" />
                       <span className="flex-1 truncate">{entry.label}</span>
-                      {entry.notificationDot && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-                      )}
                       {badge != null && (
                         <span className="type-caption text-ink-muted tabular-nums">
                           {badge.toLocaleString()}
@@ -268,9 +265,6 @@ export function MobileNav({
                   >
                     <Icon size={16} className="shrink-0" />
                     <span className="flex-1 truncate text-left">{entry.label}</span>
-                    {entry.notificationDot && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-                    )}
                     <ChevronRight
                       size={14}
                       className={cn(
@@ -300,9 +294,6 @@ export function MobileNav({
                                 <span className="shrink-0 text-[11px]">{child.badge}</span>
                               )}
                               <span className="truncate">{child.label}</span>
-                              {child.notificationDot && (
-                                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-                              )}
                             </Link>
                           </li>
                         );

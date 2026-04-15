@@ -340,9 +340,6 @@ function LeafItem({
         {!collapsed && (
           <>
             <span className="flex-1 truncate">{entry.label}</span>
-            {entry.notificationDot && (
-              <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-            )}
             {badge != null && (
               <span className="type-caption text-ink-muted tabular-nums">
                 {badge.toLocaleString()}
@@ -392,9 +389,6 @@ function GroupItem({
         {!collapsed && (
           <>
             <span className="flex-1 truncate text-left">{entry.label}</span>
-            {entry.notificationDot && (
-              <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-            )}
             <ChevronRight
               size={14}
               className={cn(
