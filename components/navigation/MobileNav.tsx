@@ -10,6 +10,7 @@ import {
   isPathActive,
   groupContainsActive,
   type NavGroup,
+  type NavExternalLink,
 } from "./nav-config";
 
 interface MobileNavProps {
@@ -193,7 +194,31 @@ export function MobileNav({
         {/* Nav items */}
         <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-2 min-h-0">
           <ul className="flex flex-col gap-[2px]">
-            {NAV_ENTRIES.map((entry) => {
+            {NAV_ENTRIES.map((entry, i) => {
+              if (entry.type === "separator") {
+                return (
+                  <li key={`sep-${i}`} className="mx-3 my-2 h-px bg-border-subtle" />
+                );
+              }
+
+              if (entry.type === "external") {
+                const ExtIcon = (entry as NavExternalLink).icon;
+                return (
+                  <li key={entry.href}>
+                    <a
+                      href={entry.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleLinkClick}
+                      className="flex h-10 items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
+                    >
+                      {ExtIcon && <ExtIcon size={16} className="shrink-0" />}
+                      <span className="flex-1 truncate">{entry.label}</span>
+                    </a>
+                  </li>
+                );
+              }
+
               if (entry.type === "leaf") {
                 const active = isPathActive(entry.href, activePath);
                 const Icon = entry.icon;
@@ -212,6 +237,9 @@ export function MobileNav({
                     >
                       <Icon size={16} className="shrink-0" />
                       <span className="flex-1 truncate">{entry.label}</span>
+                      {entry.notificationDot && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
+                      )}
                       {badge != null && (
                         <span className="type-caption text-ink-muted tabular-nums">
                           {badge.toLocaleString()}
@@ -233,8 +261,8 @@ export function MobileNav({
                     onClick={() => toggleGroup(entry.label)}
                     className={cn(
                       "flex h-10 w-full items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors",
-                      hasActiveChild && !isExpanded
-                        ? "text-signature hover:bg-surface-subtle"
+                      hasActiveChild
+                        ? "bg-brand-l2 text-signature hover:bg-brand-l1"
                         : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
                     )}
                   >
@@ -262,13 +290,19 @@ export function MobileNav({
                               href={child.href}
                               onClick={handleLinkClick}
                               className={cn(
-                                "flex h-9 items-center rounded-lg pl-9 pr-3 text-[13px] transition-colors",
+                                "flex h-9 items-center gap-1.5 rounded-lg pl-9 pr-3 text-[13px] transition-colors",
                                 childActive
                                   ? "bg-brand-l2 text-signature font-medium"
                                   : "text-ink-secondary hover:bg-surface-subtle hover:text-ink-primary"
                               )}
                             >
+                              {child.badge && (
+                                <span className="shrink-0 text-[11px]">{child.badge}</span>
+                              )}
                               <span className="truncate">{child.label}</span>
+                              {child.notificationDot && (
+                                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
+                              )}
                             </Link>
                           </li>
                         );

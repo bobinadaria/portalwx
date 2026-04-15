@@ -1,14 +1,5 @@
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  Utensils,
-  ShieldCheck,
-  Newspaper,
-  Home,
-  HelpCircle,
-  type LucideIcon,
-} from "lucide-react";
+import { getIcon } from "@/lib/icons";
+import type { LucideIcon } from "lucide-react";
 
 /* ── Types ────────────────────────────────────────────────────────────── */
 
@@ -17,43 +8,70 @@ export interface NavLeaf {
   label: string;
   href: string;
   icon: LucideIcon;
-  notificationDot?: boolean;
 }
 
 export interface NavGroupChild {
   label: string;
   href: string;
+  /** Optional text prefix badge, e.g. "🆕" */
+  badge?: string;
 }
 
 export interface NavGroup {
   type: "group";
   label: string;
   icon: LucideIcon;
-  notificationDot?: boolean;
   children: NavGroupChild[];
 }
 
-export type NavEntry = NavLeaf | NavGroup;
+export interface NavSeparator {
+  type: "separator";
+}
+
+export interface NavExternalLink {
+  type: "external";
+  label: string;
+  href: string;
+  icon?: LucideIcon;
+}
+
+export type NavEntry = NavLeaf | NavGroup | NavSeparator | NavExternalLink;
 
 /* ── Navigation structure (matches full Sharry sidebar) ─────────────── */
 
 export const NAV_ENTRIES: NavEntry[] = [
-  { type: "leaf", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { type: "leaf", label: "People", href: "/people", icon: Users },
-  { type: "leaf", label: "Tenants", href: "/tenants", icon: Building2 },
+  {
+    type: "leaf",
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: getIcon("Icons/Home")!,
+  },
+  {
+    type: "leaf",
+    label: "People",
+    href: "/people",
+    icon: getIcon("Icons/Group")!,
+  },
+  {
+    type: "leaf",
+    label: "Tenants",
+    href: "/tenants",
+    icon: getIcon("Icons/Category2")!,
+  },
   {
     type: "group",
     label: "Amenities",
-    icon: Utensils,
+    icon: getIcon("Icons/Gaming")!,
     children: [
       { label: "Bookings", href: "/amenities/bookings" },
+      { label: "Bookings 2.0", href: "/amenities/bookings-2", badge: "🆕" },
       { label: "Restaurants", href: "/amenities/restaurants" },
     ],
   },
   {
     type: "group",
     label: "Operations",
-    icon: ShieldCheck,
+    icon: getIcon("Icons/Setting")!,
     children: [
       { label: "Guestbook", href: "/operations/guestbook" },
       { label: "Parking", href: "/operations/parking" },
@@ -64,7 +82,7 @@ export const NAV_ENTRIES: NavEntry[] = [
   {
     type: "group",
     label: "Content",
-    icon: Newspaper,
+    icon: getIcon("Icons/Paper-Note")!,
     children: [
       { label: "Events", href: "/content/events" },
       { label: "News", href: "/content/news" },
@@ -81,7 +99,7 @@ export const NAV_ENTRIES: NavEntry[] = [
   {
     type: "group",
     label: "About",
-    icon: Home,
+    icon: getIcon("Icons/Building2")!,
     children: [
       { label: "My Building", href: "/about/my-building" },
       { label: "Local Services", href: "/about/local-services" },
@@ -90,7 +108,25 @@ export const NAV_ENTRIES: NavEntry[] = [
       { label: "Documents", href: "/about/documents" },
     ],
   },
-  { type: "leaf", label: "Help", href: "/help", icon: HelpCircle },
+  {
+    type: "leaf",
+    label: "Help",
+    href: "/help",
+    icon: getIcon("Icons/Question_small")!,
+  },
+  {
+    type: "leaf",
+    label: "Scheduled Tasks",
+    href: "/scheduled-tasks",
+    icon: getIcon("Icons/Progress")!,
+  },
+  { type: "separator" },
+  {
+    type: "external",
+    label: "BMS",
+    href: "#",
+    icon: getIcon("Icons/LinkOutside_small")!,
+  },
 ];
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
@@ -100,6 +136,9 @@ export function isPathActive(href: string, activePath?: string): boolean {
   return activePath === href || activePath.startsWith(href + "/");
 }
 
-export function groupContainsActive(group: NavGroup, activePath?: string): boolean {
+export function groupContainsActive(
+  group: NavGroup,
+  activePath?: string
+): boolean {
   return group.children.some((c) => isPathActive(c.href, activePath));
 }

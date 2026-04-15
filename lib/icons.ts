@@ -57,6 +57,7 @@ import {
   // Misc
   Signal, Monitor, Tv, Laptop, Tablet, Smartphone,
   Building2, Clock, CalendarDays,
+  Box,
   // Loader
   Loader2,
 } from "lucide-react";
@@ -232,7 +233,7 @@ const ICON_MAP: Record<string, LucideIcon | null> = {
 
   // ── Layout ───────────────────────────────────────
   "Icons/Category":               LayoutGrid,
-  "Icons/Category2":              Layers,
+  "Icons/Category2":              LayoutGrid,
   "Icons/Column":                 Columns,
   "Icons/Row":                    Rows,
   "Icons/Filter":                 Filter,
@@ -313,7 +314,7 @@ const ICON_MAP: Record<string, LucideIcon | null> = {
   "Icons/Movie":                  Video,
   "Icons/Movie2":                 Video,
   "Icons/Ticket":                 null,   // custom
-  "Icons/Gaming":                 null,   // custom
+  "Icons/Gaming":                 Box,
   "Icons/NoImg":                  Image,
 
   // ── Misc / Social ────────────────────────────────
