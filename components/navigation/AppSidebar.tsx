@@ -421,9 +421,6 @@ function GroupItem({
                     <span className="shrink-0 text-[11px]">{child.badge}</span>
                   )}
                   <span className="truncate">{child.label}</span>
-                  {child.notificationDot && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-status-error shrink-0" />
-                  )}
                 </Link>
               </li>
             );
